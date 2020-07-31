@@ -13,14 +13,14 @@ const fileOutput = process.argv[3] ?? 'convertedFile.txt';
 async function convertCsvFileToJson(csvFilePath, jsonFilePath) {
     try {
         const jsonArray = await csv().fromFile(csvFilePath);
-        await writeFileAsync(jsonFilePath, JSON.stringify(jsonArray).slice(1,-1).replace(/},{/g, '}\n{').concat('\n'));
+        await writeFileAsync(jsonFilePath, JSON.stringify(jsonArray).slice(1, -1).replace(/},{/g, '}\n{').concat('\n'));
     } catch (error) {
         console.error(error);
         throw error;
     }
 }
 
-convertCsvFileToJson(`${pathToFolderInput}/${fileInput}`,`${pathToFolderOutput}/${fileOutput}`)
+convertCsvFileToJson(`${pathToFolderInput}/${fileInput}`, `${pathToFolderOutput}/${fileOutput}`)
     .then(
         () => console.log(`File "${fileInput}" was converted to "${fileOutput}".`),
         () => console.error(`File "${fileInput}" wasn't converted to "${fileOutput}".`)

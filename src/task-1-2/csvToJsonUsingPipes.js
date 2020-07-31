@@ -20,4 +20,4 @@ pipeline(
             console.log(`File "${fileInput}" was converted to "${fileOutput}".`);
         }
     }
-)
+);
