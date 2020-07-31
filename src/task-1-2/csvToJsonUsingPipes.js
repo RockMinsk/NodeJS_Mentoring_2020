@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { pipeline } from 'stream';
-import csv from "csvtojson";
+import csv from 'csvtojson';
 
 const pathToFolderInput = path.resolve('./src/task-1-2/csv');
 const pathToFolderOutput = path.resolve('./src/task-1-2/txt');
@@ -15,9 +15,9 @@ pipeline(
     fs.createWriteStream(`${pathToFolderOutput}/${fileOutput}`),
     error => {
         if (error) {
-            console.error(`The following error occurred during convertion file from CSV to TXT format: ${error}`);
+            console.error(`File "${fileInput}" wasn't converted to "${fileOutput}".\n${error}`);
         } else {
-            console.log(`File was converted from CSV to TXT.`);
+            console.log(`File "${fileInput}" was converted to "${fileOutput}".`);
         }
     }
 )
