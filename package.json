@@ -9,8 +9,8 @@
     "prestart": "npm run lint",
     "start": "nodemon --exec babel-node --ext js,mjs,json,csv",
     "task-1-1": "npm run start -- ./src/task-1-1/index.js",
-    "task-1-2-1": "npm run start -- ./src/task-1-2/csvToJson.js",
-    "task-1-2-2": "npm run start -- ./src/task-1-2/csvToJsonUsingPipes.js"
+    "task-1-2-1": "npm run start -- ./src/task-1-2/csvToJsonUsingBuffer.js",
+    "task-1-2-2": "npm run start -- ./src/task-1-2/csvToJsonUsingStreams.js"
   },
   "author": "Kiryl Shytsikau",
   "license": "ISC",
