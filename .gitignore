@@ -1,0 +1,13 @@
+# Log files:
+*.log
+
+# System files and folders:
+*.db
+target/
+bin/
+node_modules/
+
+# IDEs:
+.vscode/
+.idea/
+*.IML
