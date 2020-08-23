@@ -2,13 +2,13 @@ export const checkAuth = (req, res, next) => {
     if (!req.session.loggedin) {
         res.status(403).send('You are not authorized to view this page. Please login to the application.');
     } else {
-        next();
+        return next();
     }
 };
 
 const errorResponse = (schemaErrors) => {
     const errors = schemaErrors.map(error => {
-        let { path, message } = error;
+        const { path, message } = error;
         return { path, message };
     });
     return {
@@ -27,7 +27,7 @@ export const validateSchema = (schema, property) => {
         if (error && error.isJoi) {
             res.status(400).json(errorResponse(error.details));
         } else {
-            next();
+            return next();
         }
     };
 };

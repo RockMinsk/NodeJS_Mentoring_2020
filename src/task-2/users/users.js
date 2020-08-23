@@ -1,4 +1,4 @@
-export let localStorage = [
+export const localStorage = [
     {
         id: '56cf0b4a-73a0-4aa6-b109-71e3c774e0d7',
         login: 'Robin Wieruch',

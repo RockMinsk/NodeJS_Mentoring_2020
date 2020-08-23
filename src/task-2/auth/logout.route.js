@@ -1,6 +1,6 @@
 import express from 'express';
 
-export let logoutRouter = express.Router();
+export const logoutRouter = express.Router();
 
 logoutRouter.get('/logout', (req, res) => {
     req.session.loggedin = false;

@@ -3,7 +3,7 @@ import * as path from 'path';
 import { checkAuth } from '../utils/utils';
 import { localStorage } from '../users/users.js';
 
-export let loginRouter = express.Router();
+export const loginRouter = express.Router();
 
 loginRouter.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, './login.html'));

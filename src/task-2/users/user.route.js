@@ -4,7 +4,7 @@ import { localStorage } from './users.js';
 import { checkAuth, validateSchema, getAutoSuggestedItems } from '../utils/utils.js';
 import { userSchemas } from './user.model';
 
-export let userRoute = express.Router();
+export const userRoute = express.Router();
 
 userRoute.all('/api/*', checkAuth);
 userRoute.all('/api/users/:id', validateSchema(userSchemas.id, 'params'));
@@ -18,41 +18,40 @@ userRoute.route('/api/users')
             res.status(404).json({ message: 'No users found.' });
         } else {
             res.json(filteredUsers);
-            next();
+            return next();
         }
     })
     .post(validateSchema(userSchemas.user, 'body'), (req, res) => {
-    const userRequest = req.body;
-    const user = {
-        id: uuidv4(),
-        ...userRequest,
-        isDeleted: false
-    };
+        const userRequest = req.body;
+        const user = {
+            id: uuidv4(),
+            ...userRequest,
+            isDeleted: false
+        };
         localStorage.push(user);
-        res.json(localStorage.filter(user => !user.isDeleted));
+        res.json(localStorage.find(elem => elem.id === user.id));
     });
 
 userRoute.route('/api/users/:id')
     .get((req, res, next) => {
-        console.log(req.params);
         const { id } = req.params;
-        const user = localStorage.filter(user => user.id === id && user.isDeleted === false);
+        const user = localStorage.filter(elem => elem.id === id && elem.isDeleted === false);
 
         if (!user[0]) {
             res.status(404).json({ message: `User with id ${id} not found.` });
         } else {
             res.json(user[0]);
-            next();
+            return next();
         }
     })
     .put(validateSchema(userSchemas.user, 'body'), (req, res, next) => {
         const { id } = req.params;
-        const user = localStorage.find(user => user.id === id);
+        const user = localStorage.find(elem => elem.id === id);
         const index = localStorage.indexOf(user);
         const keys = Object.keys(req.body);
 
         keys.forEach(key => {
-            key === 'age' ? user[key] = +req.body[key] : user[key] = req.body[key];
+            return key === 'age' ? user[key] = +req.body[key] : user[key] = req.body[key];
         });
         localStorage[index] = user;
         res.json(localStorage[index]);
@@ -60,7 +59,7 @@ userRoute.route('/api/users/:id')
     })
     .delete((req, res) => {
         const { id } = req.params;
-        const user = localStorage.filter(user => user.id === id)[0];
+        const user = localStorage.filter(elem => elem.id === id)[0];
 
         user.isDeleted = true;
         res.json({ message: `User ${id} deleted` });
