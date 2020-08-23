@@ -1,6 +1,6 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { localStorage } from './users.js';
+import { localStorage } from './user.storage.js';
 import { checkAuth, validateSchema, getAutoSuggestedItems } from '../utils/utils.js';
 import { userSchemas } from './user.model';
 
@@ -35,12 +35,12 @@ userRoute.route('/api/users')
 userRoute.route('/api/users/:id')
     .get((req, res, next) => {
         const { id } = req.params;
-        const user = localStorage.filter(elem => elem.id === id && elem.isDeleted === false);
+        const user = localStorage.find(elem => elem.id === id && elem.isDeleted === false);
 
-        if (!user[0]) {
+        if (!user) {
             res.status(404).json({ message: `User with id ${id} not found.` });
         } else {
-            res.json(user[0]);
+            res.json(user);
             return next();
         }
     })
@@ -59,8 +59,12 @@ userRoute.route('/api/users/:id')
     })
     .delete((req, res) => {
         const { id } = req.params;
-        const user = localStorage.filter(elem => elem.id === id)[0];
+        const user = localStorage.find(elem => elem.id === id);
 
-        user.isDeleted = true;
-        res.json({ message: `User ${id} deleted` });
+        if (!user) {
+            res.status(404).json({ message: `User with id ${id} not found.` });
+        } else {
+            user.isDeleted = true;
+            res.json({ message: `User with id ${id} deleted` });
+        }
     });

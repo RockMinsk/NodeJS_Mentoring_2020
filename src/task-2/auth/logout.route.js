@@ -1,8 +1,8 @@
 import express from 'express';
 
-export const logoutRouter = express.Router();
+export const logoutRoute = express.Router();
 
-logoutRouter.get('/logout', (req, res) => {
+logoutRoute.get('/logout', (req, res) => {
     req.session.loggedin = false;
     delete req.session.login;
     res.redirect('/');

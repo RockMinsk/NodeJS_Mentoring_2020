@@ -1,9 +1,9 @@
 import express from 'express';
 import session from 'express-session';
-import { loginRouter } from './auth/login.route.js';
+import { loginRoute } from './auth/login.route.js';
 import { userRoute } from './users/user.route.js';
-import { logoutRouter } from './auth/logout.route.js';
-import { HOSTNAME, PORT, COOKIE_SECRET, COOKIE_AGE } from './constants';
+import { logoutRoute } from './auth/logout.route.js';
+import { HOSTNAME, PORT, COOKIE_SECRET, COOKIE_AGE } from './constants/constants.js';
 
 const app = express();
 
@@ -20,9 +20,9 @@ app.use(session({
     saveUninitialized: true
 }));
 
-app.use(loginRouter);
+app.use(loginRoute);
 app.use(userRoute);
-app.use(logoutRouter);
+app.use(logoutRoute);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

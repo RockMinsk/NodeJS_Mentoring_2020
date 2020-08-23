@@ -1,15 +1,15 @@
 import express from 'express';
 import * as path from 'path';
 import { checkAuth } from '../utils/utils';
-import { localStorage } from '../users/users.js';
+import { localStorage } from '../users/user.storage.js';
 
-export const loginRouter = express.Router();
+export const loginRoute = express.Router();
 
-loginRouter.get('/', (req, res) => {
+loginRoute.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, './login.html'));
 });
 
-loginRouter.post('/login', (req, res) => {
+loginRoute.post('/login', (req, res) => {
     const { login, password } = req.body;
     if (login && password) {
         const expectedUser = localStorage.find(user => user.login === login);
@@ -27,6 +27,6 @@ loginRouter.post('/login', (req, res) => {
     }
 });
 
-loginRouter.get('/home', checkAuth, (req, res) => {
+loginRoute.get('/home', checkAuth, (req, res) => {
     res.send('Congratulations, you have successfully logged in!');
 });
