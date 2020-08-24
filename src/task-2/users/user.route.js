@@ -1,19 +1,19 @@
 import express from 'express';
 import { v4 as uuidv4 } from 'uuid';
 import { localStorage } from './user.storage.js';
-import { checkAuth, validateSchema, getAutoSuggestedItems } from '../utils/utils.js';
+import * as utils from '../utils/utils.js';
 import { userSchemas } from './user.model';
 
 export const userRoute = express.Router();
 
-userRoute.all('/api/*', checkAuth);
-userRoute.all('/api/users/:id', validateSchema(userSchemas.id, 'params'));
+userRoute.all('/*', utils.checkAuth);
+userRoute.all('/:id', utils.validateSchema(userSchemas.id, 'params'), utils.validateItemExistence(localStorage));
 
-userRoute.route('/api/users')
+userRoute.route('/')
     .get((req, res, next) => {
         const activeUsers = localStorage.filter(user => !user.isDeleted);
         const { loginSubstring, limit } = req.query;
-        const filteredUsers = getAutoSuggestedItems(activeUsers, 'login', loginSubstring, limit);
+        const filteredUsers = utils.getAutoSuggestedItems(activeUsers, 'login', loginSubstring, limit);
         if (!localStorage || filteredUsers.length === 0) {
             res.status(404).json({ message: 'No users found.' });
         } else {
@@ -21,7 +21,7 @@ userRoute.route('/api/users')
             return next();
         }
     })
-    .post(validateSchema(userSchemas.user, 'body'), (req, res) => {
+    .post(utils.validateSchema(userSchemas.user, 'body'), utils.validateItemUniqueness(localStorage, 'login'), (req, res) => {
         const userRequest = req.body;
         const user = {
             id: uuidv4(),
@@ -32,21 +32,13 @@ userRoute.route('/api/users')
         res.json(localStorage.find(elem => elem.id === user.id));
     });
 
-userRoute.route('/api/users/:id')
+userRoute.route('/:id')
     .get((req, res, next) => {
-        const { id } = req.params;
-        const user = localStorage.find(elem => elem.id === id && elem.isDeleted === false);
-
-        if (!user) {
-            res.status(404).json({ message: `User with id ${id} not found.` });
-        } else {
-            res.json(user);
-            return next();
-        }
+        res.json(req.item);
+        return next();
     })
-    .put(validateSchema(userSchemas.user, 'body'), (req, res, next) => {
-        const { id } = req.params;
-        const user = localStorage.find(elem => elem.id === id);
+    .put(utils.validateSchema(userSchemas.user, 'body'), (req, res, next) => {
+        const user = req.item;
         const index = localStorage.indexOf(user);
         const keys = Object.keys(req.body);
 
@@ -58,13 +50,7 @@ userRoute.route('/api/users/:id')
         next();
     })
     .delete((req, res) => {
-        const { id } = req.params;
-        const user = localStorage.find(elem => elem.id === id);
-
-        if (!user) {
-            res.status(404).json({ message: `User with id ${id} not found.` });
-        } else {
-            user.isDeleted = true;
-            res.json({ message: `User with id ${id} deleted` });
-        }
+        const user = req.item;
+        user.isDeleted = true;
+        res.json({ message: `User with id ${user.id} deleted` });
     });

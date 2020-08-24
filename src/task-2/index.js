@@ -21,8 +21,8 @@ app.use(session({
 }));
 
 app.use(loginRoute);
-app.use(userRoute);
-app.use(logoutRoute);
+app.use('/api/users', userRoute);
+app.use('/logout', logoutRoute);
 
 app.use((err, req, res, next) => {
     console.error(err.stack);

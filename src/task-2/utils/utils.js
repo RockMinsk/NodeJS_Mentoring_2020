@@ -32,13 +32,39 @@ export const validateSchema = (schema, property) => {
     };
 };
 
-export const getAutoSuggestedItems = (items, itemKey, itemSubstring, limit) => {
+export const validateItemExistence = (obj) => {
+    return (req, res, next) => {
+        const { id } = req.params;
+        const item = obj.find(elem => elem.id === id && elem.isDeleted === false);
+
+        if (!item) {
+            res.status(404).json({ message: `Item with id ${id} not found.` });
+        } else {
+            req.item = item;
+            return next();
+        }
+    };
+};
+
+export const validateItemUniqueness = (obj, key) => {
+    return (req, res, next) => {
+        const isParamNotUnique = obj.find(elem => elem[key] === req.body[key]);
+
+        if (isParamNotUnique) {
+            res.status(409).json({ message: `The "${key}" value is not unique` });
+        } else {
+            return next();
+        }
+    };
+};
+
+export const getAutoSuggestedItems = (obj, key, itemSubstring, limit) => {
     let filteredItems;
     if (itemSubstring) {
-        filteredItems = items.filter(item => item[itemKey].includes(itemSubstring));
-        filteredItems.sort((a, b) => (a[itemKey] > b[itemKey]) ? 1 : ((b[itemKey] > a[itemKey]) ? -1 : 0));
+        filteredItems = obj.filter(elem => elem[key].includes(itemSubstring));
+        filteredItems.sort((a, b) => (a[key] > b[key]) ? 1 : ((b[key] > a[key]) ? -1 : 0));
     } else {
-        filteredItems = items;
+        filteredItems = obj;
     }
     if (limit && limit <= filteredItems.length) {
         filteredItems.length = limit;
