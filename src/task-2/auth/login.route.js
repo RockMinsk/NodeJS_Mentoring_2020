@@ -22,7 +22,7 @@ loginRoute.post('/login', (req, res) => {
         }
         res.end();
     } else {
-        res.send('Please enter username and assword');
+        res.send('Please enter username and password');
         res.end();
     }
 });

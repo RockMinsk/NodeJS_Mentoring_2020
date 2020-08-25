@@ -29,22 +29,20 @@ userRoute.route('/')
             isDeleted: false
         };
         localStorage.push(user);
-        res.json(localStorage.find(elem => elem.id === user.id));
+        res.status(201).json(localStorage.find(elem => elem.id === user.id));
     });
 
 userRoute.route('/:id')
     .get((req, res, next) => {
         res.json(req.item);
-        return next();
+        next();
     })
     .put(utils.validateSchema(userSchemas.user, 'body'), (req, res, next) => {
         const user = req.item;
         const index = localStorage.indexOf(user);
         const keys = Object.keys(req.body);
 
-        keys.forEach(key => {
-            return key === 'age' ? user[key] = +req.body[key] : user[key] = req.body[key];
-        });
+        keys.forEach(key => user[key] = req.body[key]);
         localStorage[index] = user;
         res.json(localStorage[index]);
         next();
