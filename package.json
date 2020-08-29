@@ -6,13 +6,13 @@
   "scripts": {
     "lint": "eslint ./",
     "babel-build": "babel src --out-dir lib",
-    "prestart": "npm run lint",
-    "start": "nodemon --exec babel-node --ext js,mjs,json,csv",
-    "task-1-1": "npm run start ./core/task-1-1/index.js",
-    "task-1-2-1": "npm run start ./core/task-1-2/csvToJsonUsingBuffer.js",
-    "task-1-2-2": "npm run start ./core/task-1-2/csvToJsonUsingStreams.js",
+    "prebabel-start": "npm run lint",
+    "babel-start": "nodemon --exec babel-node --ext js,mjs,json,csv",
+    "task-1-1": "npm run babel-start ./core/task-1-1/index.js",
+    "task-1-2-1": "npm run babel-start ./core/task-1-2/csvToJsonUsingBuffer.js",
+    "task-1-2-2": "npm run babel-start ./core/task-1-2/csvToJsonUsingStreams.js",
     "compile-check": "tsc --noEmit --diagnostics",
-    "task-2": "nodemon ./src/index.ts"
+    "start": "nodemon ./src/index.ts"
   },
   "author": "Kiryl Shytsikau",
   "license": "ISC",
