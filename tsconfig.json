@@ -1,0 +1,32 @@
+{
+    "compilerOptions": {
+        "baseUrl": "./src",
+        "esModuleInterop": true,
+        "module": "CommonJS",
+        "moduleResolution": "node",
+        "noImplicitAny": true,
+        "noImplicitReturns": true,
+        "outDir": "./dist",
+        "paths": {
+            "*": [
+                "node_modules/*",
+            ]
+        },
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": true,
+        "target": "es2018",
+        "typeRoots": [
+            "node_modules/@types"
+        ],
+        "lib": [
+            "es2020"
+        ]
+    },
+    "include":[
+        "src/**/*.ts"
+    ],
+    "exclude": [
+        "node_modules"
+      ]
+}

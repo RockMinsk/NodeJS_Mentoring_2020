@@ -5,6 +5,7 @@
 *.db
 target/
 bin/
+dist/
 node_modules/
 
 # IDEs:

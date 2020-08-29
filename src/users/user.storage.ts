@@ -1,4 +1,6 @@
-export const localStorage = [
+import { UserInterface } from "./user.type";
+
+export const localStorage: UserInterface[] = [
     {
         id: '56cf0b4a-73a0-4aa6-b109-71e3c774e0d7',
         login: 'Robin Wieruch',
