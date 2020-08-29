@@ -5,14 +5,14 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint ./",
-    "compile-check": "tsc --noEmit --diagnostics",
-    "build": "babel src --out-dir lib",
+    "babel-build": "babel src --out-dir lib",
     "prestart": "npm run lint",
     "start": "nodemon --exec babel-node --ext js,mjs,json,csv",
-    "task-1-1": "npm run start ./src/task-1-1/index.js",
-    "task-1-2-1": "npm run start ./src/task-1-2/csvToJsonUsingBuffer.js",
-    "task-1-2-2": "npm run start ./src/task-1-2/csvToJsonUsingStreams.js",
-    "task-2": "nodemon ./src/task-2/index.ts"
+    "task-1-1": "npm run start ./core/task-1-1/index.js",
+    "task-1-2-1": "npm run start ./core/task-1-2/csvToJsonUsingBuffer.js",
+    "task-1-2-2": "npm run start ./core/task-1-2/csvToJsonUsingStreams.js",
+    "compile-check": "tsc --noEmit --diagnostics",
+    "task-2": "nodemon ./src/index.ts"
   },
   "author": "Kiryl Shytsikau",
   "license": "ISC",

@@ -24,7 +24,7 @@
         ]
     },
     "include":[
-        "src/task-2/*.ts"
+        "src/**/*.ts"
     ],
     "exclude": [
         "node_modules"
