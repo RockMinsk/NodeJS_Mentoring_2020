@@ -1,7 +1,7 @@
-import { Sequelize, Model, DataTypes } from 'sequelize';
+import { Sequelize, Model, DataTypes, Op } from 'sequelize';
 import { DB_HOSTNAME, DB_PORT, DB_USER, DB_PASSWORD } from '../constants/constants';
 
-export const sequelize = new Sequelize({
+const sequelize = new Sequelize({
     host: DB_HOSTNAME,
     port: DB_PORT,
     username: DB_USER,
@@ -9,10 +9,14 @@ export const sequelize = new Sequelize({
     dialect: 'postgres'
 })
 
+export const operatorsAliases = {
+  $like: Op.like,
+  $not: Op.not
+}
+
 export class User extends Model {}
 
 User.init(
-
     {
         id: {
             allowNull: false,

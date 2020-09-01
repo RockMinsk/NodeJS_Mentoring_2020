@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import * as path from 'path';
-import { checkAuth } from '../utils/utils';
+import { checkAuth } from '../utils/validation';
 import { getUserByLoginFromDb } from '../users/user.service';
 
 export const loginRoute = Router();

@@ -1,9 +1,9 @@
 import express from 'express';
 import session from 'express-session';
 import { loginRoute } from './auth/login.route';
-import { userRoute } from './users/user.route';
+import { userRoute } from './users/user.routes';
 import { logoutRoute } from './auth/logout.route';
-import { errorHandlerGlobal } from './utils/utils'
+import { errorHandlerGlobal } from './utils/validation'
 import { HOSTNAME, PORT, COOKIE_SECRET, COOKIE_AGE } from './constants/constants';
 
 const app = express();
