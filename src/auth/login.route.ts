@@ -1,7 +1,7 @@
 import { Request, Response, Router } from 'express';
 import * as path from 'path';
 import { checkAuth } from '../utils/utils';
-import { localStorage } from '../users/user.storage';
+import { getUserByLoginFromDb } from '../users/user.service';
 
 export const loginRoute = Router();
 
@@ -9,10 +9,10 @@ loginRoute.get('/', (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, './login.html'));
 });
 
-loginRoute.post('/login', (req: Request, res: Response) => {
+loginRoute.post('/login', async(req: Request, res: Response) => {
     const { login, password } = req.body;
     if (login && password) {
-        const expectedUser = localStorage.find(user => user.login === login);
+        const expectedUser = await getUserByLoginFromDb(login);
         if (expectedUser && expectedUser.password === password) {
             req.session!.loggedin = true;
             req.session!.login = login;

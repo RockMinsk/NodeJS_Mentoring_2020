@@ -1,5 +1,4 @@
 import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
-import { RequestUser } from '../users/user';
 import { UserInterface } from '../users/user.type';
 
 export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
@@ -41,21 +40,23 @@ export const validateSchema = (schema: any, property: string) => {
     };
 };
 
-export const validateItemExistence = (obj: Object[]) => {
-    return (req: RequestUser, res: Response, next: NextFunction) => {
-        const { id } = req.params;
-        const item: any = obj.find((elem: any) => elem.id === id && elem.isDeleted === false);
-
-        if (!item) {
-            res.status(404).json({ message: `Item with id ${id} not found.` });
-        } else {
-            req.item = item;
-            return next();
-        }
-    };
+export const isArrayEmpty = (obj: Object[], res: Response, next: NextFunction) => {
+    if (obj.length === 0) {
+        res.status(404).json({ message: `Items not found.` });
+    } else {
+        return next();
+    }
 };
 
-export const validateItemUniqueness = (obj: Object[], key: string) => {
+export const isObjectExists = (item: Object, id: string, res: Response, next: NextFunction) => {
+    if (!item) {
+        res.status(404).json({ message: `Item with id ${id} not found.` });
+    } else {
+        return next();
+    }
+};
+
+export const isItemUnique = (obj: Object[], key: string) => {
     return (req: Request, res: Response, next: NextFunction) => {
         const isParamNotUnique: any = obj.find((elem: any) => elem[key] === req.body[key]);
 
