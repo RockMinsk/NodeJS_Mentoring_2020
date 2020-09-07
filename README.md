@@ -11,8 +11,10 @@ NodeJS Global Mentoring Program (2020Q3)
     - Task 1.2.1 - run script "npm run task-1-2-1" to convert csv file to txt using ReadFile / WriteFile methods
     - Task 1.2.2 - run script "npm run task-1-2-2" to convert csv file to txt using Streams and Pipes
 
+
 - Module 2 - IN MEMORY CRUD REST SERVICE WITH VALIDATION 
     - Task 2 - run script 'npm run start' to start in memory CRUD REST service with validation
+
 
 - Module 3 - POSTGRESQL AND LAYERED ARCHITECTURE 
     - Task 3 
@@ -29,7 +31,7 @@ NodeJS Global Mentoring Program (2020Q3)
 >             id uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
 >             login VARCHAR ( 50 ) UNIQUE NOT NULL,
 >             password VARCHAR ( 50 ) NOT NULL,
->         	  age INTEGER NOT NULL,
+>             age INTEGER NOT NULL,
 >             is_deleted BOOLEAN NOT NULL
 >         )
 >         

@@ -1,8 +1,9 @@
 import { User, operatorsAliases } from './user.model';
 import { UserInterface } from './user.interface';
 
-export const getUsersFromDb = async (loginSubstring?: string, limit?: number | undefined): Promise<Array<UserInterface>> => {
-    try {
+export class UserService {
+
+    getUsersFromDb = async (loginSubstring?: string, limit?: number | undefined): Promise<Array<UserInterface>> => {
         let users: Array<any> = [];
         const dbUsers: User[] = await User.findAll({
             limit: limit ? limit : undefined,
@@ -18,14 +19,9 @@ export const getUsersFromDb = async (loginSubstring?: string, limit?: number | u
         });
         dbUsers.map(user => users.push(user.toJSON()));
         return users;
-    } catch (err) {
-        console.error(`The following error occurred: ${err}`);
-        return err.message;
-    }
-};
+    };
 
-export const getUserByIdFromDb = async (id: string): Promise<UserInterface> => {
-    try {
+    getUserByIdFromDb = async (id: string): Promise<UserInterface|null> => {
         const dbUser: User | null = await User.findOne({
             where: { 
                 id: id,
@@ -33,14 +29,9 @@ export const getUserByIdFromDb = async (id: string): Promise<UserInterface> => {
             }
         });
         return dbUser ? dbUser.get({ plain: true }) : null;
-    } catch (err) {
-        console.error(`The following error occurred: ${err}`);
-        return err.message;
     }
-}
 
-export const getUserByLoginFromDb = async (login: string): Promise<UserInterface> => {
-    try {
+    getActiveUserByLoginFromDb = async (login: string): Promise<UserInterface|null> => {
         const dbUser: User | null = await User.findOne({
             where: {
                 login: login,
@@ -48,26 +39,24 @@ export const getUserByLoginFromDb = async (login: string): Promise<UserInterface
             }
         });
         return dbUser ? dbUser.get({ plain: true }) : null;
-    } catch (err) {
-        console.error(`The following error occurred: ${err}`);
-        return err.message;
     }
-}
 
-export const addNewUserInDb = async(obj: UserInterface): Promise<UserInterface> => {
-    try {
+    // NOTE. Method is for checking login uniqueness
+    getAnyUserByLoginFromDb = async (login: string): Promise<UserInterface|null> => {
+        const dbUser: User | null = await User.findOne({
+            where: { login: login }
+        });
+        return dbUser ? dbUser.get({ plain: true }) : null;
+    }
+
+    addNewUserInDb = async(obj: UserInterface): Promise<UserInterface|null> => {
         const dbUser: User = await User.create(obj);
         return dbUser.get({ plain: true });
-    } catch (err) {
-        console.error(`The following error occurred: ${err}`);
-        return err.errors[0].message;
     }
-}
 
-export const updateUserInDb = async(id: string, obj: any): Promise<UserInterface> => {
-    try {
+    updateUserInDb = async(id: string, obj: any): Promise<UserInterface|null> => {
         const dbUser: User | null = await User.findByPk(id);
-        const isUserDeleted: User = dbUser?.get({ plain: true }).is_deleted;
+        const isUserDeleted: boolean = dbUser?.get({ plain: true }).is_deleted;
         if (!isUserDeleted) {
             dbUser?.update({ 
                 login: obj.login,
@@ -76,18 +65,10 @@ export const updateUserInDb = async(id: string, obj: any): Promise<UserInterface
             })
         }
         return dbUser && !isUserDeleted ? dbUser.get({ plain: true }) : null;
-    } catch (err) {
-        console.error(`The following error occurred: ${err}`);
-        return err.message;
     }
-}
 
-export const softDeleteFromDb = async (id: string) => {
-    try {
+    softDeleteFromDb = async (id: string): Promise<User|null> => {
         const dbUser: User | null = await User.findByPk(id);
         return dbUser ? dbUser.update({ is_deleted: true }) : null;
-    } catch (err) {
-        console.error(`The following error occurred: ${err}`);
-        return err.message;
     }
 }

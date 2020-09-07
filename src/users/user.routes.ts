@@ -1,18 +1,20 @@
 import { Router } from 'express';
-import { getUsers, getUserById, addUser, updateUser, deleteUser } from './user.controller';
+import { UserController } from './user.controller';
 import { checkAuth, validateSchema } from '../utils/validation';
 import { userSchemas, validationTarget } from './user.validation';
 
 export const userRoute = Router();
 
+const userControler = new UserController();
+
 userRoute.all('/*', checkAuth);
 userRoute.all('/:id', validateSchema(userSchemas.id, validationTarget.id));
 
 userRoute.route('/')
-    .get(getUsers)
-    .post(validateSchema(userSchemas.addUser, validationTarget.addUser), addUser);
+    .get(userControler.getUsers)
+    .post(validateSchema(userSchemas.addUser, validationTarget.addUser), userControler.addUser);
 
 userRoute.route('/:id')
-    .get(getUserById)
-    .put(validateSchema(userSchemas.updateUser, validationTarget.updateUser), updateUser)
-    .delete(deleteUser);
+    .get(userControler.getUserById)
+    .put(validateSchema(userSchemas.updateUser, validationTarget.updateUser), userControler.updateUser)
+    .delete(userControler.deleteUser);

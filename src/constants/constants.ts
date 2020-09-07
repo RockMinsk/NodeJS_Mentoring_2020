@@ -8,3 +8,7 @@ export const DB_PASSWORD: string = process.env.DB_PASSWORD || 'system';
 
 export const COOKIE_SECRET: string = 'nodejs mentoring';
 export const COOKIE_AGE: number = 60000 * 60 * 24;
+
+export const COMMON_MESSAGES = {
+    SERVER_ERROR: `The following error occurred:`
+}
