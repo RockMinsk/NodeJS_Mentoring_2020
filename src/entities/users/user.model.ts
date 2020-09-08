@@ -1,5 +1,5 @@
 import { Sequelize, Model, DataTypes, Op } from 'sequelize';
-import { DB_HOSTNAME, DB_PORT, DB_USER, DB_PASSWORD } from '../constants/constants';
+import { DB_HOSTNAME, DB_PORT, DB_USER, DB_PASSWORD } from '../../constants/constants';
 
 const sequelize = new Sequelize({
     host: DB_HOSTNAME,
@@ -45,6 +45,6 @@ User.init(
         sequelize,
         timestamps: false,
         schema: 'public',
-        modelName: 'users'
+        modelName: 'users',
     }
 );

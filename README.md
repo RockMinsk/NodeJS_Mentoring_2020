@@ -22,7 +22,7 @@ NodeJS Global Mentoring Program (2020Q3)
         - run script 'npm run start' to start application
         - use login / password of any predifined user to login into the app (via http://localhost:3000/ or in Postman)
 
->         DROP TABLE <SCHEMA_NAME>."users";
+>         DROP TABLE IF EXISTS <SCHEMA_NAME>."users";
 >         
 >         CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 >         
@@ -45,3 +45,37 @@ NodeJS Global Mentoring Program (2020Q3)
 >             INSERT INTO users (login, password, age, is_deleted) VALUES ('Anghel Botos', 'changeit1', 41, false);
 >             INSERT INTO users (login, password, age, is_deleted) VALUES ('Michel Voide', 'changeit1', 39, false);
 >             INSERT INTO users (login, password, age, is_deleted) VALUES ('Dave Bautista', 'changeit1', 51, false);
+
+
+- Module 4 - SECOND ENTITY AND MANY-TO-MANY ENTITY RELATIONSHIPS  
+    - Task 4 
+        - run below SQL script in your database to create "groups" and "user_group" tables
+        - run script 'npm run start' to start application
+        - use login / password of any predifined user to login into the app (via http://localhost:3000/ or in Postman)
+
+>        DROP TABLE IF EXISTS <SCHEMA_NAME>."groups";
+> 
+>        CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+> 
+>        CREATE TABLE <SCHEMA_NAME>."groups" (
+>            id uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
+>            name VARCHAR ( 50 ) UNIQUE NOT NULL,
+>            permissions TEXT[] NOT NULL )
+> 
+>         TABLESPACE pg_default;
+> 
+>         ALTER TABLE <SCHEMA_NAME>."groups"
+>            OWNER to postgres;
+---------------------------------------------------------------------------
+>        DROP TABLE IF EXISTS <SCHEMA_NAME>."user_group";
+> 
+>        CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
+> 
+>        CREATE TABLE <SCHEMA_NAME>."user_group" (
+>            user_id uuid REFERENCES <SCHEMA_NAME>."users" (id) NOT NULL,
+>            group_id uuid REFERENCES <SCHEMA_NAME>."groups" (id) NOT NULL )
+> 
+>        TABLESPACE pg_default;
+> 
+>        ALTER TABLE <SCHEMA_NAME>."user_group"
+>            OWNER to postgres;

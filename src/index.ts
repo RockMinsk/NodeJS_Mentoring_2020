@@ -1,7 +1,8 @@
 import express from 'express';
 import session from 'express-session';
 import { loginRoute } from './auth/login.route';
-import { userRoute } from './users/user.routes';
+import { userRoute } from './entities/users/user.routes';
+import { groupRoute } from './entities/groups/group.routes';
 import { logoutRoute } from './auth/logout.route';
 import { errorHandlerGlobal } from './utils/validation'
 import { HOSTNAME, PORT, COOKIE_SECRET, COOKIE_AGE } from './constants/constants';
@@ -23,6 +24,7 @@ app.use(session({
 
 app.use(loginRoute);
 app.use('/api/users', userRoute);
+app.use('/api/groups', groupRoute);
 app.use('/logout', logoutRoute);
 
 app.use(errorHandlerGlobal);

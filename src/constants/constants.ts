@@ -9,6 +9,11 @@ export const DB_PASSWORD: string = process.env.DB_PASSWORD || 'system';
 export const COOKIE_SECRET: string = 'nodejs mentoring';
 export const COOKIE_AGE: number = 60000 * 60 * 24;
 
-export const COMMON_MESSAGES = {
+export const MESSAGES = {
+    ITEMS_NOT_FOUND: (itemName: string) => `${itemName} not found.`,
+    ITEM_NOT_FOUND: (itemName: string, id: string) => `${itemName} with id ${id} not found.`,
+    ITEM_NOT_CREATED: (itemName: string) => `${itemName} is not created.`,
+    ITEM_DELETED: (itemName: string, id: string) => `${itemName} with id ${id} deleted`,
+    LOGIN_UNIQUENESS: `Login should be unique`,
     SERVER_ERROR: `The following error occurred:`
 }
