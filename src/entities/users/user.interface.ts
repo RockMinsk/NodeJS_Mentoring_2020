@@ -1,8 +1,7 @@
-export type UserInterface = {
+export interface UserInterface {
     id: string;
     login: string;
     password: string;
     age: number;
-    isDeleted: boolean;
-    [index: string]: boolean | number | string;
+    is_deleted: boolean;
 };

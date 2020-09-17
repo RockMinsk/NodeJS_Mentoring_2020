@@ -56,7 +56,7 @@ export class UserService {
 
     update = async(id: string, obj: any): Promise<UserInterface|null> => {
         const item: User | null = await User.findByPk(id);
-        const isItemDeleted: boolean = item?.get({ plain: true }).is_deleted;
+        const isItemDeleted: boolean | undefined = item?.get({ plain: true }).is_deleted;
         if (!isItemDeleted) {
             item?.update({ 
                 login: obj.login,

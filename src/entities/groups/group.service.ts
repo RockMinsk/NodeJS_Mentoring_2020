@@ -1,5 +1,4 @@
 import { Group } from './group.model';
-import { UserGroup } from './user_group.model'
 import { GroupInterface } from './group.interface';
 
 export class GroupService {
@@ -45,12 +44,6 @@ export class GroupService {
     }
 
     delete = async (id: string): Promise<number|null> => {
-        const items: Group[] = await Group.findAll({
-            include: [{
-                model: UserGroup
-              }]
-        });
-        console.log(items);
         const item: number| null = await Group.destroy({where: { id: id }});
         return item;
     }

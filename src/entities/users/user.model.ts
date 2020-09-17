@@ -1,20 +1,36 @@
-import { Sequelize, Model, DataTypes, Op } from 'sequelize';
-import { DB_HOSTNAME, DB_PORT, DB_USER, DB_PASSWORD } from '../../constants/constants';
+import {
+    Sequelize,
+    Model,
+    DataTypes,
+    Op,
+    HasManyGetAssociationsMixin,
+    BelongsToManyRemoveAssociationsMixin,
+    Association
+} from 'sequelize';
+import { DB_CONNECTION_PROPERTIES } from '../../constants/constants';
+import { UserInterface } from './user.interface';
+import { Group, UserGroup } from '../groups/group.model';
 
-const sequelize = new Sequelize({
-    host: DB_HOSTNAME,
-    port: DB_PORT,
-    username: DB_USER,
-    password: DB_PASSWORD,
-    dialect: 'postgres'
-})
+const sequelize = new Sequelize(DB_CONNECTION_PROPERTIES);
 
 export const operatorsAliases = {
   $like: Op.like,
   $not: Op.not
 }
 
-export class User extends Model {}
+export class User extends Model<UserInterface> implements UserInterface {
+    public id!: string;
+    public login!: string;
+    public password!: string;
+    public age!: number;
+    public is_deleted!: boolean;
+
+    public delete!: BelongsToManyRemoveAssociationsMixin<UserGroup, number>;
+
+    public static associations: {
+        user_group: Association<User, UserGroup>;
+      };
+}
 
 User.init(
     {
@@ -45,6 +61,12 @@ User.init(
         sequelize,
         timestamps: false,
         schema: 'public',
-        modelName: 'users',
+        modelName: 'users'
     }
 );
+
+// User.belongsToMany(Group, {
+//     through: "user_group",
+//     as: "groups",
+//     foreignKey: "user_id"
+// });
