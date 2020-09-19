@@ -1,31 +1,15 @@
-import {
-    Sequelize,
-    Model,
-    DataTypes,
-    HasManyGetAssociationsMixin,
-    BelongsToManyRemoveAssociationsMixin,
-    Association
-}
-from 'sequelize';
-import { DB_CONNECTION_PROPERTIES } from '../../constants/constants';
+import { Model, DataTypes } from 'sequelize';
+import { sequelize } from '../../db/dbConnection'
 import { GroupInterface, UserGroupInterface, Permissions } from './group.interface';
 import { User } from '../users/user.model'
-
-const sequelize = new Sequelize(DB_CONNECTION_PROPERTIES);
 
 export class Group extends Model<GroupInterface> implements GroupInterface  {
     public id!: string;
     public name!: string;
-    public permissions!: Permissions[];
-
-    public delete!: BelongsToManyRemoveAssociationsMixin<UserGroup, number>;
-
-    public static associations: {
-        user_group: Association<Group, UserGroup>;
-      };
+    public permissions!: Array<Permissions>;
 }
 
-export class UserGroup extends Model<UserGroupInterface> implements UserGroupInterface {
+class UserGroup extends Model<UserGroupInterface> implements UserGroupInterface {
     public user_id!: string;
     public group_id!: string;
 }
@@ -69,12 +53,18 @@ UserGroup.init(
         sequelize,
         timestamps: false,
         schema: 'public',
-        modelName: 'user_group'
+        modelName: 'user_groups'
     }
 );
 
-// Group.belongsToMany(User, {
-//     through: "user_group",
-//     as: "users",
-//     foreignKey: "group_id",
-// })
+Group.belongsToMany(User, {
+    through: 'user_groups',
+    as: 'users',
+    foreignKey: 'group_id'
+})
+
+User.belongsToMany(Group, {
+    through: 'user_groups',
+    as: 'groups',
+    foreignKey: 'user_id'
+});

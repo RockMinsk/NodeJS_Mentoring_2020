@@ -61,6 +61,22 @@ export class GroupController {
             return res.sendStatus(500);
         }
     }
+
+    addUsers = async (req: Request, res: Response) => {
+        const { id } = req.params;
+        const { userIds } = req.body;
+        try {
+            const items = await groupService.addUsers(id, userIds);
+            if (!items) {
+                return res.status(404).json({ message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, req.params.id) });
+            } else {
+                return res.json(items);
+            }
+        } catch (err) {
+            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
+            return res.sendStatus(500);
+        }
+    }
     
     update = async(req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params;

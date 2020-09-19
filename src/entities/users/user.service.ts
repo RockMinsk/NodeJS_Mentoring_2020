@@ -43,9 +43,7 @@ export class UserService {
 
     // NOTE. Method is for checking login uniqueness
     getAnyByLogin = async (login: string): Promise<UserInterface|null> => {
-        const item: User | null = await User.findOne({
-            where: { login: login }
-        });
+        const item: User | null = await User.findOne({ where: { login: login }});
         return item ? item.get({ plain: true }) : null;
     }
 
@@ -67,7 +65,7 @@ export class UserService {
         return item && !isItemDeleted ? item.get({ plain: true }) : null;
     }
 
-    softDelete = async (id: string): Promise<User|null> => {
+    softDelete = async (id: string): Promise<any|null> => {
         const item: User | null = await User.findByPk(id);
         return item ? item.update({ is_deleted: true }) : null;
     }

@@ -1,17 +1,6 @@
-import {
-    Sequelize,
-    Model,
-    DataTypes,
-    Op,
-    HasManyGetAssociationsMixin,
-    BelongsToManyRemoveAssociationsMixin,
-    Association
-} from 'sequelize';
-import { DB_CONNECTION_PROPERTIES } from '../../constants/constants';
+import { Model, DataTypes, Op } from 'sequelize';
 import { UserInterface } from './user.interface';
-import { Group, UserGroup } from '../groups/group.model';
-
-const sequelize = new Sequelize(DB_CONNECTION_PROPERTIES);
+import { sequelize } from '../../db/dbConnection'
 
 export const operatorsAliases = {
   $like: Op.like,
@@ -24,12 +13,6 @@ export class User extends Model<UserInterface> implements UserInterface {
     public password!: string;
     public age!: number;
     public is_deleted!: boolean;
-
-    public delete!: BelongsToManyRemoveAssociationsMixin<UserGroup, number>;
-
-    public static associations: {
-        user_group: Association<User, UserGroup>;
-      };
 }
 
 User.init(
@@ -64,9 +47,3 @@ User.init(
         modelName: 'users'
     }
 );
-
-// User.belongsToMany(Group, {
-//     through: "user_group",
-//     as: "groups",
-//     foreignKey: "user_id"
-// });

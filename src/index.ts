@@ -6,6 +6,7 @@ import { groupRoute } from './entities/groups/group.routes';
 import { logoutRoute } from './auth/logout.route';
 import { errorHandlerGlobal } from './utils/validation'
 import { HOSTNAME, PORT, COOKIE_SECRET, COOKIE_AGE } from './constants/constants';
+import { dbSync } from './db/dbConnection';
 
 const app = express();
 
@@ -29,6 +30,10 @@ app.use('/logout', logoutRoute);
 
 app.use(errorHandlerGlobal);
 
-app.listen(PORT, HOSTNAME, () =>
-    console.log(`Server is running at http://${HOSTNAME}:${PORT}`)
-);
+const startAppWithDbSynchronization = async() => {
+    await dbSync();
+    app.listen(PORT, HOSTNAME, () => console.log(`\x1b[32mApplication is running at http://${HOSTNAME}:${PORT}\x1b[0m`)
+    );
+};
+
+startAppWithDbSynchronization();

@@ -7,7 +7,7 @@ export const userRoute = Router();
 
 const userController = new UserController();
 
-userRoute.all('/*', checkAuth);
+// userRoute.all('/*', checkAuth);
 userRoute.all('/:id', validateSchema(userSchemas.id, validationTarget.id));
 
 userRoute.route('/')

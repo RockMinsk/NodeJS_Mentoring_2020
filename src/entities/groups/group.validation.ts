@@ -8,6 +8,8 @@ const NAME: Joi.StringSchema = Joi.string().$.pattern(NAME_PATTERN).rule({ messa
 
 const PERMISSIONS: Joi.ArraySchema = Joi.array().items(Joi.string().valid('READ', 'WRITE', 'DELETE', 'SHARE', 'UPLOAD_FILES'));
 
+const USER_IDS:  Joi.ArraySchema = Joi.array().items(Joi.string().guid({ version: ['uuidv4'] }));
+
 export const groupSchemas = {
     id: Joi.object({
         id: ID.required()
@@ -22,8 +24,15 @@ export const groupSchemas = {
     })
 };
 
+export const groupUsersSchemas = {
+    addUsers: Joi.object({
+        userIds: USER_IDS.required()
+    })
+};
+
 export const validationTarget = {
     id: 'params',
     addGroup: 'body',
-    updateGroup: 'body'
+    updateGroup: 'body',
+    addUsers: 'body'
 }
