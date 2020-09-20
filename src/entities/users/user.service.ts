@@ -31,6 +31,19 @@ export class UserService {
         return item ? item.get({ plain: true }) : null;
     }
 
+    // NOTE. Method is for additional check during adding users to group
+    getAllActiveUserIds = async(ids: string[]): Promise<string[]> => {
+        let correctedItems: string[] = [];
+        for (let id of ids) {
+            const item: UserInterface | null = await this.getById(id);
+            if (item) {
+                correctedItems.push(id)
+            }
+        }
+        console.log(correctedItems);
+        return correctedItems;
+    }
+
     getActiveByLogin = async (login: string): Promise<UserInterface|null> => {
         const item: User | null = await User.findOne({
             where: {

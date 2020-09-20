@@ -1,11 +1,14 @@
 import { Model, DataTypes, Op } from 'sequelize';
 import { UserInterface } from './user.interface';
 import { sequelize } from '../../db/dbConnection'
+import { DB_SCHEMA_NAME } from '../../constants/constants'
 
 export const operatorsAliases = {
   $like: Op.like,
   $not: Op.not
 }
+
+export const DB_USER_MODEL_NAME: string = 'users';
 
 export class User extends Model<UserInterface> implements UserInterface {
     public id!: string;
@@ -43,7 +46,9 @@ User.init(
     }, {
         sequelize,
         timestamps: false,
-        schema: 'public',
-        modelName: 'users'
+        underscored: true,
+        freezeTableName: true,
+        schema: DB_SCHEMA_NAME,
+        modelName: DB_USER_MODEL_NAME
     }
 );

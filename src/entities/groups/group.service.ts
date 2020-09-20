@@ -1,6 +1,7 @@
 import { GroupInterface } from './group.interface';
 import { Group } from './group.model';
 import { sequelize } from '../../db/dbConnection';
+import { UserService } from '../users/user.service'
 
 export class GroupService {
 
@@ -32,11 +33,13 @@ export class GroupService {
     }
 
     addUsers = async (id: string, userIds: string[]): Promise<GroupInterface|null> => {
-        const item: any | null = await Group.findOne({ where: { id: id }});
+        const userService = new UserService;
+        const group: any | null = await Group.findOne({ where: { id: id }});
+        const existingUserIds: string[] = await userService.getAllActiveUserIds(userIds);
         // TODO: clarify how to move transaction to Model layer to avoid using sequelize inside Service layer
-        if (item) {
-            await sequelize.transaction(async(transaction) => await item.addUsers(userIds, { transaction }));
-            return item;
+        if (group && existingUserIds.length > 0) {
+            await sequelize.transaction(async(transaction) => await group.addUsers(existingUserIds, { transaction }));
+            return group;
         } else {
             return null
         }

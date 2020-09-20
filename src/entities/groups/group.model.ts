@@ -1,7 +1,13 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '../../db/dbConnection'
 import { GroupInterface, UserGroupInterface, Permissions } from './group.interface';
-import { User } from '../users/user.model'
+import { User, DB_USER_MODEL_NAME } from '../users/user.model'
+import { DB_SCHEMA_NAME } from '../../constants/constants'
+
+const DB_GROUP_MODEL_NAME: string = 'groups';
+const DB_USER_GROUP_MODEL_NAME: string = 'user_group';
+const DB_GROUP_FOREIGN_KEY: string = 'group_id';
+const DB_USER_FOREIGN_KEY: string = 'user_id';
 
 export class Group extends Model<GroupInterface> implements GroupInterface  {
     public id!: string;
@@ -34,8 +40,10 @@ Group.init(
     }, {
         sequelize,
         timestamps: false,
-        schema: 'public',
-        modelName: 'groups'
+        underscored: true,
+        freezeTableName: true,
+        schema: DB_SCHEMA_NAME,
+        modelName: DB_GROUP_MODEL_NAME
     }
 );
 
@@ -52,19 +60,21 @@ UserGroup.init(
     }, {
         sequelize,
         timestamps: false,
-        schema: 'public',
-        modelName: 'user_groups'
+        underscored: true,
+        freezeTableName: true,
+        schema: DB_SCHEMA_NAME,
+        modelName: DB_USER_GROUP_MODEL_NAME
     }
 );
 
 Group.belongsToMany(User, {
-    through: 'user_groups',
-    as: 'users',
-    foreignKey: 'group_id'
+    through: DB_USER_GROUP_MODEL_NAME,
+    as: DB_USER_MODEL_NAME,
+    foreignKey: DB_GROUP_FOREIGN_KEY
 })
 
 User.belongsToMany(Group, {
-    through: 'user_groups',
-    as: 'groups',
-    foreignKey: 'user_id'
+    through: DB_USER_GROUP_MODEL_NAME,
+    as: DB_GROUP_MODEL_NAME,
+    foreignKey: DB_USER_FOREIGN_KEY
 });

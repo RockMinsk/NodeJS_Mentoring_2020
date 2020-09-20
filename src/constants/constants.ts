@@ -8,6 +8,7 @@ const DB_PORT: number = Number(process.env.DB_PORT) || 5432;
 const DB_USER: string = process.env.DB_USER || 'postgres';
 const DB_PASSWORD: string = process.env.DB_PASSWORD || 'system';
 const DB_DIALECT: string = process.env.DB_DIALECT || 'postgres';
+export const DB_SCHEMA_NAME: string = process.env.DB_SCHEMA_NAME || 'public';
 
 export const DB_CONNECTION_PROPERTIES: Object = {
     host: DB_HOSTNAME,
@@ -22,6 +23,7 @@ export const COOKIE_AGE: number = 60000 * 60 * 24;
 
 export const MESSAGES = {
     ITEMS_NOT_FOUND: (itemName: string) => `${itemName} not found.`,
+    SOME_ITEMS_NOT_FOUND: (itemName1: string, itemName2: string) => `${itemName1} or ${itemName2} not found.`,
     ITEM_NOT_FOUND: (itemName: string, id: string) => `${itemName} with id ${id} not found.`,
     ITEM_NOT_CREATED: (itemName: string) => `${itemName} is not created.`,
     ITEM_DELETED: (itemName: string, id: string) => `${itemName} with id ${id} deleted`,

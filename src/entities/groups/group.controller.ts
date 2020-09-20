@@ -6,6 +6,7 @@ import { MESSAGES } from '../../constants/constants';
 
 const groupService = new GroupService();
 const entityNameForMessage = 'Group';
+const entityNameAdditionalForMessage = 'User';
 
 export class GroupController {
 
@@ -68,7 +69,7 @@ export class GroupController {
         try {
             const items = await groupService.addUsers(id, userIds);
             if (!items) {
-                return res.status(404).json({ message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, req.params.id) });
+                return res.status(404).json({ message: MESSAGES.SOME_ITEMS_NOT_FOUND(entityNameForMessage, entityNameAdditionalForMessage) });
             } else {
                 return res.json(items);
             }
