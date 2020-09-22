@@ -1,20 +1,22 @@
-import { Sequelize, Model, DataTypes, Op } from 'sequelize';
-import { DB_HOSTNAME, DB_PORT, DB_USER, DB_PASSWORD } from '../constants/constants';
-
-const sequelize = new Sequelize({
-    host: DB_HOSTNAME,
-    port: DB_PORT,
-    username: DB_USER,
-    password: DB_PASSWORD,
-    dialect: 'postgres'
-})
+import { Model, DataTypes, Op } from 'sequelize';
+import { UserInterface } from './user.interface';
+import { sequelize } from '../../db/dbConnection'
+import { DB_SCHEMA_NAME } from '../../constants/constants'
 
 export const operatorsAliases = {
   $like: Op.like,
   $not: Op.not
 }
 
-export class User extends Model {}
+export const DB_USER_MODEL_NAME: string = 'users';
+
+export class User extends Model<UserInterface> implements UserInterface {
+    public id!: string;
+    public login!: string;
+    public password!: string;
+    public age!: number;
+    public is_deleted!: boolean;
+}
 
 User.init(
     {
@@ -44,7 +46,9 @@ User.init(
     }, {
         sequelize,
         timestamps: false,
-        schema: 'public',
-        modelName: 'users'
+        underscored: true,
+        freezeTableName: true,
+        schema: DB_SCHEMA_NAME,
+        modelName: DB_USER_MODEL_NAME
     }
 );

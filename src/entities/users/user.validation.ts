@@ -3,7 +3,7 @@ import * as Joi from 'joi';
 const ID: Joi.StringSchema = Joi.string().guid({ version: ['uuidv4'] });
 
 const LOGIN_PATTERN: RegExp = new RegExp('^[a-zA-Z0-9_ ]{3,30}$');
-const LOGIN_ERROR_MESSAGE: string = 'Password must contain A-Z, a-z, 0-9, _. Minimum length is 3, maximim length is 30 characters.';
+const LOGIN_ERROR_MESSAGE: string = 'Login must contain A-Z, a-z, 0-9, _. Minimum length is 3, maximim length is 30 characters.';
 const LOGIN: Joi.StringSchema = Joi.string().$.pattern(LOGIN_PATTERN).rule({ message: LOGIN_ERROR_MESSAGE });
 
 const PASSWORD_PATTERN: RegExp = new RegExp('^(?=.*[a-zA-Z])(?=.*[0-9])[a-zA-Z0-9]{8,}$');

@@ -1,8 +1,8 @@
 import { Request, Response, Router } from 'express';
 import * as path from 'path';
 import { checkAuth } from '../utils/validation';
-import { UserService } from '../users/user.service';
-import { COMMON_MESSAGES } from '../constants/constants';
+import { UserService } from '../entities/users/user.service';
+import { MESSAGES } from '../constants/constants';
 
 export const loginRoute = Router();
 
@@ -17,9 +17,9 @@ loginRoute.post('/login', async(req: Request, res: Response) => {
     if (login && password) {
         let expectedUser;
         try {
-            expectedUser = await userService.getActiveUserByLoginFromDb(login);
+            expectedUser = await userService.getActiveByLogin(login);
         } catch (err) {
-            console.error(`${COMMON_MESSAGES.SERVER_ERROR} ${err}`);
+            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
             return res.sendStatus(500);
         }
         if (expectedUser && expectedUser.password === password) {
