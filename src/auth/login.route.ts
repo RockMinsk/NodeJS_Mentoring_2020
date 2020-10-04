@@ -3,6 +3,7 @@ import * as path from 'path';
 import { checkAuth } from '../utils/validation';
 import { UserService } from '../entities/users/user.service';
 import { MESSAGES } from '../constants/constants';
+import { logger } from '../utils/logger/logger.config';
 
 export const loginRoute = Router();
 
@@ -19,7 +20,7 @@ loginRoute.post('/login', async(req: Request, res: Response) => {
         try {
             expectedUser = await userService.getActiveByLogin(login);
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
+            logger.error(`${MESSAGES.SERVER_ERROR} ${err}`);
             return res.sendStatus(500);
         }
         if (expectedUser && expectedUser.password === password) {

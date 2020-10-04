@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserService } from './user.service';
 import { UserInterface } from './user.interface';
 import { MESSAGES } from '../../constants/constants';
+import { logger } from '../../utils/logger/logger.config';
 
 const userService = new UserService();
 const entityNameForMessage = 'User';
@@ -22,7 +23,7 @@ export class UserController {
                 return next();
             }
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
+            logger.error(`${MESSAGES.SERVER_ERROR} ${err}`);
             return res.sendStatus(500);
         }
     };
@@ -32,13 +33,14 @@ export class UserController {
         try {
             const item: UserInterface | null = await userService.getById(id);
             if (!item) {
+                logger.error(MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id));
                 res.status(404).json({ message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id) });
             } else {
                 res.json(item);
                 return next();
             }
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
+            logger.error(`${MESSAGES.SERVER_ERROR} ${err}`);
             return res.sendStatus(500);
         }
     };
@@ -59,7 +61,7 @@ export class UserController {
                 return res.status(201).json(request);
             }
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
+            logger.error(`${MESSAGES.SERVER_ERROR} ${err}`);
             return res.sendStatus(500);
         }
     }
@@ -82,7 +84,7 @@ export class UserController {
             }
             return next();
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
+            logger.error(`${MESSAGES.SERVER_ERROR} ${err}`);
             return res.sendStatus(500);
         } 
     }
@@ -92,13 +94,14 @@ export class UserController {
         try {
             const item: UserInterface | null = await userService.getById(id);
             if (!item) {
+                logger.error(MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id));
                 return res.status(404).json({ message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id) });
             } else {
                 await userService.softDelete(id);
                 return res.status(204).json({ message: MESSAGES.ITEM_DELETED(entityNameForMessage, id) });
             }
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
+            logger.error(`${MESSAGES.SERVER_ERROR} ${err}`);
             return res.sendStatus(500);
         } 
     }

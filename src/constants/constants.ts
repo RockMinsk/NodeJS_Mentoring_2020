@@ -28,5 +28,10 @@ export const MESSAGES = {
     ITEM_NOT_CREATED: (itemName: string) => `${itemName} is not created.`,
     ITEM_DELETED: (itemName: string, id: string) => `${itemName} with id ${id} deleted`,
     LOGIN_UNIQUENESS: `Login should be unique`,
-    SERVER_ERROR: `The following error occurred:`
+    SERVER_ERROR: `The following error occurred:`,
+    AUTHORIZATION_ERROR: `You are not authorized to view this page. Please login to the application.`
 }
+
+export const SENSITIVE_DATA = [
+    'password'
+];

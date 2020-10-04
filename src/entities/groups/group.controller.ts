@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { GroupService } from './group.service';
 import { GroupInterface } from './group.interface';
 import { MESSAGES } from '../../constants/constants';
+import { logger } from '../../utils/logger/logger.config';
 
 const groupService = new GroupService();
 const entityNameForMessage = 'Group';
@@ -22,7 +23,7 @@ export class GroupController {
                 return next();
             }
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
+            logger.error(`${MESSAGES.SERVER_ERROR} ${err}`);
             return res.sendStatus(500);
         }
     };
@@ -38,7 +39,7 @@ export class GroupController {
                 return next();
             }
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
+            logger.error(`${MESSAGES.SERVER_ERROR} ${err}`);
             return res.sendStatus(500);
         }
     };
@@ -58,7 +59,7 @@ export class GroupController {
                 return res.status(201).json(request);
             }
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
+            logger.error(`${MESSAGES.SERVER_ERROR} ${err}`);
             return res.sendStatus(500);
         }
     }
@@ -74,7 +75,7 @@ export class GroupController {
                 return res.json(items);
             }
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
+            logger.error(`${MESSAGES.SERVER_ERROR} ${err}`);
             return res.sendStatus(500);
         }
     }
@@ -90,7 +91,7 @@ export class GroupController {
             }
             return next();
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
+            logger.error(`${MESSAGES.SERVER_ERROR} ${err}`);
             return res.sendStatus(500);
         } 
     }
@@ -105,7 +106,7 @@ export class GroupController {
                 return res.json({ message: MESSAGES.ITEM_DELETED(entityNameForMessage, id) });
             }
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
+            logger.error(`${MESSAGES.SERVER_ERROR} ${err}`);
             return res.sendStatus(500);
         } 
     }
