@@ -22,8 +22,8 @@ export const checkIfRouterExists = (req: Request, res: Response, next: NextFunct
 }
 
 export const errorHandlerGlobal = (err: ErrorRequestHandler, req: Request, res: Response, next: NextFunction) => {
-    logger.error(`Something broke! Error: ${err}`);
-    res.status(500).send('Something broke!');
+    logger.error(`${MESSAGES.SERVER_ERROR} ${err}`);
+    res.sendStatus(500);
     next(err);
 };
 
