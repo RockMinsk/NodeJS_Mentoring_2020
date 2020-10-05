@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { UserService } from './user.service';
 import { UserInterface } from './user.interface';
 import { MESSAGES } from '../../constants/constants';
+import { logger } from '../../utils/logger/logger.config';
 
 const userService = new UserService();
 const entityNameForMessage = 'User';
@@ -22,8 +23,7 @@ export class UserController {
                 return next();
             }
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
-            return res.sendStatus(500);
+            return next(err);
         }
     };
     
@@ -32,18 +32,18 @@ export class UserController {
         try {
             const item: UserInterface | null = await userService.getById(id);
             if (!item) {
+                logger.error(MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id));
                 res.status(404).json({ message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id) });
             } else {
                 res.json(item);
                 return next();
             }
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
-            return res.sendStatus(500);
+            return next(err);
         }
     };
     
-    add = async (req: Request, res: Response) => {
+    add = async (req: Request, res: Response, next: NextFunction) => {
         const itemRequest = req.body;
         const item: UserInterface = {
             id: uuidv4(),
@@ -53,14 +53,14 @@ export class UserController {
         try {
             const isLoginExists: boolean = !!(await userService.getAnyByLogin(item.login))
             if (isLoginExists) {
-                return res.status(409).json({ message: MESSAGES.LOGIN_UNIQUENESS })
+                logger.error(MESSAGES.LOGIN_UNIQUENESS);
+                return res.status(409).json({ message: MESSAGES.LOGIN_UNIQUENESS });
             } else {
                 const request = await userService.add(item);
                 return res.status(201).json(request);
             }
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
-            return res.sendStatus(500);
+            return next(err);
         }
     }
     
@@ -71,35 +71,36 @@ export class UserController {
             if (login) {
                 const isLoginExists: boolean = !!(await userService.getAnyByLogin(login));
                 if (isLoginExists) {
-                    return res.status(409).json({ message: MESSAGES.LOGIN_UNIQUENESS })
+                    logger.error(MESSAGES.LOGIN_UNIQUENESS);
+                    return res.status(409).json({ message: MESSAGES.LOGIN_UNIQUENESS });
                 } 
             }
             const item: UserInterface | null = await userService.update(id, req.body);
             if (!item) {
+                logger.error(MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id));
                 res.status(404).json({ message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id) });
             } else {
                 res.json(item);
             }
             return next();
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
-            return res.sendStatus(500);
+            return next(err);
         } 
     }
     
-    delete = async (req: Request, res: Response) => {
+    delete = async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params;
         try {
             const item: UserInterface | null = await userService.getById(id);
             if (!item) {
+                logger.error(MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id));
                 return res.status(404).json({ message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id) });
             } else {
                 await userService.softDelete(id);
                 return res.status(204).json({ message: MESSAGES.ITEM_DELETED(entityNameForMessage, id) });
             }
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
-            return res.sendStatus(500);
+            return next(err);
         } 
     }
 }

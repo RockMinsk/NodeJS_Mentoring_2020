@@ -1,9 +1,11 @@
 import { User, operatorsAliases } from './user.model';
 import { UserInterface } from './user.interface';
+import { serviceInfo } from '../../utils/logger/decorators/service-info';
 
 export class UserService {
 
-    getAll = async (loginSubstring?: string, limit?: number | undefined): Promise<Array<UserInterface>> => {
+    @serviceInfo
+    async getAll(loginSubstring?: string, limit?: number | undefined): Promise<Array<UserInterface>> {
         let correctedItems: Array<any> = [];
         const items: User[] = await User.findAll({
             limit: limit ? limit : undefined,
@@ -21,7 +23,8 @@ export class UserService {
         return correctedItems;
     };
 
-    getById = async (id: string): Promise<UserInterface|null> => {
+    @serviceInfo
+    async getById(id: string): Promise<UserInterface|null> {
         const item: User | null = await User.findOne({
             where: { 
                 id: id,
@@ -32,7 +35,8 @@ export class UserService {
     }
 
     // NOTE. Method is for additional check during adding users to group
-    getAllActiveUserIds = async(ids: string[]): Promise<string[]> => {
+    @serviceInfo
+    async getAllActiveUserIds(ids: string[]): Promise<string[]> {
         let correctedItems: string[] = [];
         for (let id of ids) {
             const item: UserInterface | null = await this.getById(id);
@@ -40,11 +44,11 @@ export class UserService {
                 correctedItems.push(id)
             }
         }
-        console.log(correctedItems);
         return correctedItems;
     }
 
-    getActiveByLogin = async (login: string): Promise<UserInterface|null> => {
+    @serviceInfo
+    async getActiveByLogin(login: string): Promise<UserInterface|null> {
         const item: User | null = await User.findOne({
             where: {
                 login: login,
@@ -55,17 +59,20 @@ export class UserService {
     }
 
     // NOTE. Method is for checking login uniqueness
-    getAnyByLogin = async (login: string): Promise<UserInterface|null> => {
+    @serviceInfo
+    async getAnyByLogin(login: string): Promise<UserInterface|null> {
         const item: User | null = await User.findOne({ where: { login: login }});
         return item ? item.get({ plain: true }) : null;
     }
 
-    add = async(obj: UserInterface): Promise<UserInterface|null> => {
+    @serviceInfo
+    async add(obj: UserInterface): Promise<UserInterface|null> {
         const item: User = await User.create(obj);
         return item.get({ plain: true });
     }
 
-    update = async(id: string, obj: any): Promise<UserInterface|null> => {
+    @serviceInfo
+    async update (id: string, obj: any): Promise<UserInterface|null> {
         const item: User | null = await User.findByPk(id);
         const isItemDeleted: boolean | undefined = item?.get({ plain: true }).is_deleted;
         if (!isItemDeleted) {
@@ -78,7 +85,8 @@ export class UserService {
         return item && !isItemDeleted ? item.get({ plain: true }) : null;
     }
 
-    softDelete = async (id: string): Promise<any|null> => {
+    @serviceInfo
+    async softDelete (id: string): Promise<any|null> {
         const item: User | null = await User.findByPk(id);
         return item ? item.update({ is_deleted: true }) : null;
     }

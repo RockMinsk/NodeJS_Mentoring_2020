@@ -1,8 +1,7 @@
-import { Request, Response, Router } from 'express';
+import { Request, Response, NextFunction, Router } from 'express';
 import * as path from 'path';
 import { checkAuth } from '../utils/validation';
 import { UserService } from '../entities/users/user.service';
-import { MESSAGES } from '../constants/constants';
 
 export const loginRoute = Router();
 
@@ -12,15 +11,14 @@ loginRoute.get('/', (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, './login.html'));
 });
 
-loginRoute.post('/login', async(req: Request, res: Response) => {
+loginRoute.post('/login', async(req: Request, res: Response, next: NextFunction) => {
     const { login, password } = req.body;
     if (login && password) {
         let expectedUser;
         try {
             expectedUser = await userService.getActiveByLogin(login);
         } catch (err) {
-            console.error(`${MESSAGES.SERVER_ERROR} ${err}`);
-            return res.sendStatus(500);
+            return next(err);
         }
         if (expectedUser && expectedUser.password === password) {
             req.session!.loggedin = true;

@@ -4,9 +4,11 @@ import { loginRoute } from './auth/login.route';
 import { userRoute } from './entities/users/user.routes';
 import { groupRoute } from './entities/groups/group.routes';
 import { logoutRoute } from './auth/logout.route';
-import { errorHandlerGlobal } from './utils/validation'
+import { checkIfRouterExists, errorHandlerGlobal } from './utils/validation'
+import { performanceLogger, requestLogger } from './utils/logger/middlewares'
 import { HOSTNAME, PORT, COOKIE_SECRET, COOKIE_AGE } from './constants/constants';
 import { dbSync } from './db/dbConnection';
+import { logger } from './utils/logger/logger.config';
 
 const app = express();
 
@@ -23,11 +25,15 @@ app.use(session({
     saveUninitialized: true
 }));
 
+app.use(requestLogger);
+app.use(performanceLogger);
+
 app.use(loginRoute);
 app.use('/api/users', userRoute);
 app.use('/api/groups', groupRoute);
 app.use('/logout', logoutRoute);
 
+app.use(checkIfRouterExists);
 app.use(errorHandlerGlobal);
 
 const startAppWithDbSynchronization = async() => {
@@ -37,3 +43,12 @@ const startAppWithDbSynchronization = async() => {
 };
 
 startAppWithDbSynchronization();
+
+process.on('uncaughtException', err => {
+    logger.error(err);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', err => {
+    logger.error(err);
+});
