@@ -1,12 +1,12 @@
 import express from 'express';
-import session from 'express-session';
-import { loginRoute } from './auth/login.route';
+// import session from 'express-session';
+import { authRoute } from './auth/auth.routes';
 import { userRoute } from './entities/users/user.routes';
 import { groupRoute } from './entities/groups/group.routes';
-import { logoutRoute } from './auth/logout.route';
-import { checkIfRouterExists, errorHandlerGlobal } from './utils/validation'
-import { performanceLogger, requestLogger } from './utils/logger/middlewares'
-import { HOSTNAME, PORT, COOKIE_SECRET, COOKIE_AGE } from './constants/constants';
+import { checkIfRouterExists, errorHandlerGlobal } from './utils/validation';
+import { checkAuth } from './auth/auth.middleware';
+import { performanceLogger, requestLogger } from './utils/logger/middlewares';
+import { HOSTNAME, PORT/*, COOKIE_SECRET, COOKIE_AGE*/ } from './constants/constants';
 import { dbSync } from './db/dbConnection';
 import { logger } from './utils/logger/logger.config';
 
@@ -18,20 +18,14 @@ app.set('x-powered-by', false);
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(session({
-    secret: COOKIE_SECRET,
-    cookie: { maxAge: COOKIE_AGE },
-    resave: true,
-    saveUninitialized: true
-}));
 
 app.use(requestLogger);
 app.use(performanceLogger);
 
-app.use(loginRoute);
+app.use('/', authRoute);
+app.use('/api', checkAuth);
 app.use('/api/users', userRoute);
 app.use('/api/groups', groupRoute);
-app.use('/logout', logoutRoute);
 
 app.use(checkIfRouterExists);
 app.use(errorHandlerGlobal);
@@ -49,6 +43,4 @@ process.on('uncaughtException', err => {
     process.exit(1);
 });
 
-process.on('unhandledRejection', err => {
-    logger.error(err);
-});
+process.on('unhandledRejection', err => logger.error(err));

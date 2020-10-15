@@ -1,13 +1,12 @@
 import { Router } from 'express';
 import { GroupController } from './group.controller';
-import { checkAuth, validateSchema } from '../../utils/validation';
+import { validateSchema } from '../../utils/validation';
 import { groupSchemas, groupUsersSchemas, validationTarget } from './group.validation';
 
 export const groupRoute = Router();
 
 const groupController = new GroupController();
 
-// groupRoute.all('/*', checkAuth);
 groupRoute.all('/:id', validateSchema(groupSchemas.id, validationTarget.id));
 groupRoute.all('/:id/addUsers', validateSchema(groupSchemas.id, validationTarget.id));
 

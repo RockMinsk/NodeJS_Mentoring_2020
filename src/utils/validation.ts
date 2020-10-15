@@ -3,15 +3,6 @@ import { Request, Response, NextFunction, ErrorRequestHandler } from 'express';
 import { logger } from './logger/logger.config';
 import { setTextColor, COLORS } from './logger/helpers/colorize-text';
 
-export const checkAuth = (req: Request, res: Response, next: NextFunction) => {
-    if (!req.session!.loggedin) {
-        logger.error(MESSAGES.AUTHORIZATION_ERROR);
-        res.status(403).send(MESSAGES.AUTHORIZATION_ERROR);
-    } else {
-        return next();
-    }
-};
-
 export const checkIfRouterExists = (req: Request, res: Response, next: NextFunction) => {
     if (!req.route) {
         logger.error(`Router ${setTextColor(req.originalUrl, COLORS.FgCyan)} doesn't exist`)

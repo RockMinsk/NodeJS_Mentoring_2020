@@ -3,6 +3,7 @@
 
 # System files and folders:
 *.db
+*.rest
 target/
 bin/
 dist/

@@ -9,6 +9,7 @@ const DB_USER: string = process.env.DB_USER || 'postgres';
 const DB_PASSWORD: string = process.env.DB_PASSWORD || 'system';
 const DB_DIALECT: string = process.env.DB_DIALECT || 'postgres';
 export const DB_SCHEMA_NAME: string = process.env.DB_SCHEMA_NAME || 'public';
+export const DB_SYNC_FORCE: boolean = !!process.env.DB_SYNC_FORCE && process.env.DB_SYNC_FORCE === 'false' ? false : true || true;
 
 export const DB_CONNECTION_PROPERTIES: Object = {
     host: DB_HOSTNAME,
@@ -18,8 +19,12 @@ export const DB_CONNECTION_PROPERTIES: Object = {
     dialect: DB_DIALECT
 };
 
-export const COOKIE_SECRET: string = 'nodejs mentoring';
-export const COOKIE_AGE: number = 60000 * 60 * 24;
+export const SECURITY = {
+    ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || '123456',
+    ACCESS_TOKEN_LIFE: process.env.ACCESS_TOKEN_LIFE || '1m',
+    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || '123456',
+    REFRESH_TOKEN_LIFE: process.env.REFRESH_TOKEN_LIFE || '1m'
+}
 
 export const MESSAGES = {
     ITEMS_NOT_FOUND: (itemName: string) => `${itemName} not found.`,
@@ -29,7 +34,12 @@ export const MESSAGES = {
     ITEM_DELETED: (itemName: string, id: string) => `${itemName} with id ${id} deleted`,
     LOGIN_UNIQUENESS: `Login should be unique`,
     SERVER_ERROR: `The following error occurred:`,
-    AUTHORIZATION_ERROR: `You are not authorized to view this page. Please login to the application.`
+    AUTHORIZATION_INVALID_CREDENTIALS: `Invalid username or password`,
+    AUTHORIZATION_MISSING_CREDENTIALS: `Please enter username and password`,
+    AUTHORIZATION_NO_ACTIVE_USER: (login: string) => `There is no one active user with login "${login}"`,
+    AUTHORIZATION_NO_ACTIVE_USER_TOKEN: `There is no one active user with expected token`,
+    AUTHORIZATION_NO_TOKEN: `No token provided.`,
+    AUTHORIZATION_INVALID_TOKEN: `Failed to autenticate token.`
 }
 
 export const SENSITIVE_DATA = [

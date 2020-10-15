@@ -19,7 +19,7 @@ NodeJS Global Mentoring Program (2020Q3)
     - run command "npm i" to install all project dependencies
     - PostgreSQL database must be installed and running
     - check parameters for application and database in .env file and update them if needed
-    - run command 'npm run start' to start application
+    - run command 'npm start' to start application
 
 NOTE: database synchronization is used during starting of application but you can also execute below SQL query to predefine some users
 
@@ -30,8 +30,8 @@ NOTE: database synchronization is used during starting of application but you ca
 >         CREATE TABLE <SCHEMA_NAME>."users"
 >         (
 >             id uuid PRIMARY KEY DEFAULT uuid_generate_v4() NOT NULL,
->             login VARCHAR ( 50 ) UNIQUE NOT NULL,
->             password VARCHAR ( 50 ) NOT NULL,
+>             login VARCHAR ( 255 ) UNIQUE NOT NULL,
+>             password VARCHAR ( 255 ) NOT NULL,
 >             age INTEGER NOT NULL,
 >             is_deleted BOOLEAN NOT NULL
 >         )
