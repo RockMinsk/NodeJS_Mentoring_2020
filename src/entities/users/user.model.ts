@@ -1,7 +1,7 @@
 import { Model, DataTypes, Op } from 'sequelize';
 import { UserInterface } from './user.interface';
 import { sequelize } from '../../db/dbConnection'
-import { DB_SCHEMA_NAME } from '../../constants/constants'
+import { BCRYPT_IS_USED, DB_SCHEMA_NAME } from '../../constants/constants'
 import * as bcrypt from 'bcrypt';
 
 export const operatorsAliases = {
@@ -47,14 +47,18 @@ User.init(
     }, {
         hooks: {
             beforeCreate: async(user, options) => {
-                const saltRounds = 10;
-                const hash = await bcrypt.hash(user.password, saltRounds);
-                user.password = hash;
+                if (BCRYPT_IS_USED) {
+                    const saltRounds = 10;
+                    const hash = await bcrypt.hash(user.password, saltRounds);
+                    user.password = hash;
+                }
             },
             beforeUpdate: async(user, options) => {
-                const saltRounds = 10;
-                const hash = await bcrypt.hash(user.password, saltRounds);
-                user.password = hash;
+                if (BCRYPT_IS_USED) {
+                    const saltRounds = 10;
+                    const hash = await bcrypt.hash(user.password, saltRounds);
+                    user.password = hash;
+                }
             }
           },
         sequelize,

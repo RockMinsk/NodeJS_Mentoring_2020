@@ -1,5 +1,5 @@
 import { Request, Response, NextFunction } from "express";
-import { MESSAGES, SECURITY } from "../constants/constants";
+import { BCRYPT_IS_USED, MESSAGES, SECURITY } from "../constants/constants";
 import { logger } from "../utils/logger/logger.config";
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
@@ -30,24 +30,25 @@ const signTokens = async(req: Request, res: Response, next: NextFunction, expect
 export class AuthController {
     login = async(req: Request, res: Response, next: NextFunction) => {
         const { login, password } = req.body;
-        let expectedUser: UserInterface | null;
+        let user: UserInterface | null;
         try {
-            expectedUser = await userService.getActiveByLogin(login);
+            user = await userService.getActiveByLogin(login);
         } catch (err) {
             return next(err);
         }
-        if (!expectedUser || !expectedUser.password || !(await bcrypt.compare(password, expectedUser.password))) {
-            logger.error(MESSAGES.AUTHORIZATION_INVALID_CREDENTIALS);
-            return res.status(401).json({ error: true, message: MESSAGES.AUTHORIZATION_INVALID_CREDENTIALS });
+        if (!user || !user.password
+            || (BCRYPT_IS_USED ? !(await bcrypt.compare(password, user.password)) : user.password !== password)) {
+                logger.error(MESSAGES.AUTHORIZATION_INVALID_CREDENTIALS);
+                return res.status(401).json({ error: true, message: MESSAGES.AUTHORIZATION_INVALID_CREDENTIALS });
         } else {
-            return signTokens(req, res, next, expectedUser);
+            return signTokens(req, res, next, user);
         }
     }
 
     refreshToken = async(req: Request, res: Response, next: NextFunction) => {
         let refreshToken = req.body.token
-        let expectedToken: string | null;
-        let expectedUser: UserInterface | null;
+        let savedToken: string | null;
+        let user: UserInterface | null;
         let decoded: Object;
         try {
             decoded = jwt.verify(refreshToken, SECURITY.REFRESH_TOKEN_SECRET);
@@ -57,20 +58,20 @@ export class AuthController {
         }
         const userId: string = Object(decoded).sub;
         try {
-            expectedToken = await authService.getTokenByUserId(userId);
+            savedToken = await authService.getTokenByUserId(userId);
         } catch (err) {
             return next(err);
         }
-        if (expectedToken && expectedToken === refreshToken) {
+        if (savedToken && savedToken === refreshToken) {
             try {
-                expectedUser = await userService.getById(userId);
-                if (!expectedUser) {
+                user = await userService.getById(userId);
+                if (!user) {
                     logger.error(MESSAGES.AUTHORIZATION_INVALID_CREDENTIALS);
                     return res.status(401).json({ error: true, message: MESSAGES.AUTHORIZATION_INVALID_CREDENTIALS });
                 } else {
-                    await authService.updateToken(expectedUser.id, null);
+                    await authService.updateToken(user.id, null);
                     logger.info(`User "${Object(decoded).name}" refreshed tokens`);
-                    return signTokens(req, res, next, expectedUser);
+                    return signTokens(req, res, next, user);
                 }
             } catch (err) {
                 return next(err);
@@ -83,16 +84,16 @@ export class AuthController {
 
     logout = async(req: Request, res: Response, next: NextFunction) => {
         const { login } = req.body;
-        let expectedUser;
+        let user: UserInterface | null;
         try {
-            expectedUser = await userService.getActiveByLogin(login);
+            user = await userService.getActiveByLogin(login);
         } catch (err) {
             return next(err);
         }
-        if (expectedUser) {
-            await authService.updateToken(expectedUser.id, null);
-        } else {
+        if (!user) {
             logger.error(MESSAGES.AUTHORIZATION_NO_ACTIVE_USER(login));
+        } else {
+            await authService.updateToken(user.id, null);
         }
         res.redirect('/');
     }

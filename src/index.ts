@@ -1,16 +1,20 @@
 import express from 'express';
-// import session from 'express-session';
+import cors from 'cors';
 import { authRoute } from './auth/auth.routes';
 import { userRoute } from './entities/users/user.routes';
 import { groupRoute } from './entities/groups/group.routes';
 import { checkIfRouterExists, errorHandlerGlobal } from './utils/validation';
 import { checkAuth } from './auth/auth.middleware';
 import { performanceLogger, requestLogger } from './utils/logger/middlewares';
-import { HOSTNAME, PORT/*, COOKIE_SECRET, COOKIE_AGE*/ } from './constants/constants';
+import { HOSTNAME, PORT } from './constants/constants';
 import { dbSync } from './db/dbConnection';
 import { logger } from './utils/logger/logger.config';
 
 const app = express();
+
+const corsOptions = {
+    "origin": `http://${HOSTNAME}:${PORT}`
+  }
 
 app.set('case sensitive routing', true);
 app.set('strict routing', true);
@@ -21,6 +25,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use(requestLogger);
 app.use(performanceLogger);
+
+app.use(cors(corsOptions));
 
 app.use('/', authRoute);
 app.use('/api', checkAuth);
