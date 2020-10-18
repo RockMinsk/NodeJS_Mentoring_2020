@@ -13,9 +13,9 @@ authRoute.get('/', (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, './login.html'));
 });
 
-authRoute.post('/login', authController.login);
+authRoute.post('/login', validateSchema(authSchemas.login, validationTarget.login), authController.login);
 
-authRoute.post('/token', validateSchema(authSchemas.token, validationTarget.token), authController.refreshToken);
+authRoute.post('/refresh-tokens', validateSchema(authSchemas.token, validationTarget.token), authController.refreshToken);
 
 // authRoute.get('/home', checkAuth, (req: Request, res: Response) => {
 //     res.send('Congratulations, you have successfully logged in!');

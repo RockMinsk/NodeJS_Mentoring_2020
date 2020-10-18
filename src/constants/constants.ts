@@ -20,10 +20,10 @@ export const DB_CONNECTION_PROPERTIES: Object = {
 };
 
 export const SECURITY = {
-    ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || '123456',
+    ACCESS_TOKEN_SECRET: process.env.ACCESS_TOKEN_SECRET || 'changeit',
     ACCESS_TOKEN_LIFE: process.env.ACCESS_TOKEN_LIFE || '1m',
-    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || '123456',
-    REFRESH_TOKEN_LIFE: process.env.REFRESH_TOKEN_LIFE || '1m'
+    REFRESH_TOKEN_SECRET: process.env.REFRESH_TOKEN_SECRET || 'changeit',
+    REFRESH_TOKEN_LIFE: process.env.REFRESH_TOKEN_LIFE || '1d'
 }
 
 export const MESSAGES = {
@@ -43,5 +43,6 @@ export const MESSAGES = {
 }
 
 export const SENSITIVE_DATA = [
-    'password'
+    'password',
+    'token'
 ];

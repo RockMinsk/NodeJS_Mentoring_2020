@@ -2,6 +2,7 @@ import { Model, DataTypes, Op } from 'sequelize';
 import { UserInterface } from './user.interface';
 import { sequelize } from '../../db/dbConnection'
 import { DB_SCHEMA_NAME } from '../../constants/constants'
+import * as bcrypt from 'bcrypt';
 
 export const operatorsAliases = {
   $like: Op.like,
@@ -44,6 +45,18 @@ User.init(
             type: DataTypes.BOOLEAN
         }
     }, {
+        hooks: {
+            beforeCreate: async(user, options) => {
+                const saltRounds = 10;
+                const hash = await bcrypt.hash(user.password, saltRounds);
+                user.password = hash;
+            },
+            beforeUpdate: async(user, options) => {
+                const saltRounds = 10;
+                const hash = await bcrypt.hash(user.password, saltRounds);
+                user.password = hash;
+            }
+          },
         sequelize,
         timestamps: false,
         underscored: true,

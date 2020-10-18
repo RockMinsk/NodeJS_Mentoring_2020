@@ -73,15 +73,16 @@ export class UserService {
 
     @serviceInfo
     async update (id: string, obj: any): Promise<UserInterface|null> {
-        const item: User | null = await User.findByPk(id);
+        let item: User | null = await User.findByPk(id);
         const isItemDeleted: boolean | undefined = item?.get({ plain: true }).is_deleted;
         if (!isItemDeleted) {
-            item?.update({ 
+            await item?.update({ 
                 login: obj.login,
                 password: obj.password,
                 age: obj.age
             })
         }
+        item = await User.findByPk(id);
         return item && !isItemDeleted ? item.get({ plain: true }) : null;
     }
 

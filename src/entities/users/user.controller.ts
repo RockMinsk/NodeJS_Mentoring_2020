@@ -4,8 +4,10 @@ import { UserService } from './user.service';
 import { UserInterface } from './user.interface';
 import { MESSAGES } from '../../constants/constants';
 import { logger } from '../../utils/logger/logger.config';
+import { AuthService } from '../../auth/auth.service';
 
 const userService = new UserService();
+const authService = new AuthService()
 const entityNameForMessage = 'User';
 
 export class UserController {
@@ -97,6 +99,7 @@ export class UserController {
                 return res.status(404).json({ message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id) });
             } else {
                 await userService.softDelete(id);
+                await authService.delete(id);
                 return res.status(204).json({ message: MESSAGES.ITEM_DELETED(entityNameForMessage, id) });
             }
         } catch (err) {

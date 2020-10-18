@@ -7,7 +7,7 @@ export const DB_AUTH_MODEL_NAME: string = 'tokens';
 
 export class Authentication extends Model<AuthInterface> implements AuthInterface {
     public user_id!: string;
-    public token!: string;
+    public refresh_token!: string;
 }
 
 Authentication.init(
@@ -18,7 +18,7 @@ Authentication.init(
             type: DataTypes.UUID
             // defaultValue: Sequelize.UUIDV4
         },
-        token: {
+        refresh_token: {
             allowNull: true,
             type: DataTypes.STRING
         }

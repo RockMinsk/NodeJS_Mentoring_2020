@@ -1,4 +1,4 @@
 export interface AuthInterface {
     user_id: string;
-    token: string | null;
+    refresh_token: string | null;
 };
