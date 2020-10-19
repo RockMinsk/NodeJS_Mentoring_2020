@@ -22,8 +22,7 @@ export const userSchemas = {
     addUser: Joi.object().keys({
         login: LOGIN.required(),
         password: PASSWORD.required(),
-        age: AGE.required(),
-        isDeleted: IS_DELETED.required()
+        age: AGE.required()
     }),
     updateUser: Joi.object().keys({
         login: LOGIN,

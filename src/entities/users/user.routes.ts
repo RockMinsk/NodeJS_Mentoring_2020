@@ -1,13 +1,12 @@
 import { Router } from 'express';
 import { UserController } from './user.controller';
-import { checkAuth, validateSchema } from '../../utils/validation';
+import { validateSchema } from '../../utils/validation';
 import { userSchemas, validationTarget } from './user.validation';
 
 export const userRoute = Router();
 
 const userController = new UserController();
 
-// userRoute.all('/*', checkAuth);
 userRoute.all('/:id', validateSchema(userSchemas.id, validationTarget.id));
 
 userRoute.route('/')
