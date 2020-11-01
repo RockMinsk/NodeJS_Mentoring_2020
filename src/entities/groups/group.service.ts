@@ -32,13 +32,13 @@ export class GroupService {
     }
 
     @serviceInfo
-    async add (obj: GroupInterface): Promise<GroupInterface|null> {
+    async add(obj: GroupInterface): Promise<GroupInterface|null> {
         const item: Group = await Group.create(obj);
         return item.get({ plain: true });
     }
 
     @serviceInfo
-    async addUsers (id: string, userIds: string[]): Promise<GroupInterface|null> {
+    async addUsers(id: string, userIds: string[]): Promise<GroupInterface|null> {
         const userService = new UserService;
         const group: any | null = await Group.findOne({ where: { id: id }});
         const existingUserIds: string[] = await userService.getAllActiveUserIds(userIds);
@@ -53,11 +53,12 @@ export class GroupService {
 
     @serviceInfo
     async update(id: string, obj: any): Promise<GroupInterface|null> {
-        const item: Group | null = await Group.findByPk(id);
-        item?.update({ 
+        let item: Group | null = await Group.findByPk(id);
+        await item?.update({ 
             name: obj.name,
             permissions: obj.permissions,
         })
+        item = await Group.findByPk(id);
         return item ? item.get({ plain: true }) : null;
     }
 

@@ -17,13 +17,11 @@ export class UserController {
         try {
             const items: Array<UserInterface> = await userService.getAll(`${loginSubstring}`, +limit!);
             if (!items || items.length === 0) {
-                // TODO: clarify what response it's better
                 res.json([]);
-                // res.status(404).json({ message: MESSAGES.ITEMS_NOT_FOUND('Users') });
             } else {
                 res.json(items);
-                return next();
             }
+            return next();
         } catch (err) {
             return next(err);
         }
@@ -35,7 +33,7 @@ export class UserController {
             const item: UserInterface | null = await userService.getById(id);
             if (!item) {
                 logger.error(MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id));
-                res.status(404).json({ message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id) });
+                res.status(404).json({ error: true, message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id) });
             } else {
                 res.json(item);
                 return next();
@@ -55,8 +53,8 @@ export class UserController {
         try {
             const isLoginExists: boolean = !!(await userService.getAnyByLogin(item.login))
             if (isLoginExists) {
-                logger.error(MESSAGES.LOGIN_UNIQUENESS);
-                return res.status(409).json({ message: MESSAGES.LOGIN_UNIQUENESS });
+                logger.error(MESSAGES.NAME_UNIQUENESS);
+                return res.status(409).json({ error: true, message: MESSAGES.NAME_UNIQUENESS });
             } else {
                 const request = await userService.add(item);
                 return res.status(201).json(request);
@@ -73,14 +71,14 @@ export class UserController {
             if (login) {
                 const isLoginExists: boolean = !!(await userService.getAnyByLogin(login));
                 if (isLoginExists) {
-                    logger.error(MESSAGES.LOGIN_UNIQUENESS);
-                    return res.status(409).json({ message: MESSAGES.LOGIN_UNIQUENESS });
+                    logger.error(MESSAGES.NAME_UNIQUENESS);
+                    return res.status(409).json({ error: true, message: MESSAGES.NAME_UNIQUENESS });
                 } 
             }
             const item: UserInterface | null = await userService.update(id, req.body);
             if (!item) {
                 logger.error(MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id));
-                res.status(404).json({ message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id) });
+                res.status(404).json({ error: true, message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id) });
             } else {
                 res.json(item);
             }
@@ -96,11 +94,11 @@ export class UserController {
             const item: UserInterface | null = await userService.getById(id);
             if (!item) {
                 logger.error(MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id));
-                return res.status(404).json({ message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id) });
+                return res.status(404).json({ error: true, message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id) });
             } else {
                 await userService.softDelete(id);
                 await authService.delete(id);
-                return res.status(204).json({ message: MESSAGES.ITEM_DELETED(entityNameForMessage, id) });
+                return res.json({ message: MESSAGES.ITEM_DELETED(entityNameForMessage, id) });
             }
         } catch (err) {
             return next(err);

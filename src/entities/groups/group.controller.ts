@@ -15,13 +15,11 @@ export class GroupController {
         try {
             const items: Array<GroupInterface> = await groupService.getAll();
             if (!items || items.length === 0) {
-                // TODO: clarify what response it's better
                 res.json([]);
-                // res.status(404).json({ message: MESSAGES.ITEMS_NOT_FOUND('Groups') });
             } else {
                 res.json(items);
-                return next();
             }
+            return next();
         } catch (err) {
             return next(err);
         }
@@ -52,8 +50,8 @@ export class GroupController {
         try {
             const isLoginExists: boolean = !!(await groupService.getByName(item.name))
             if (isLoginExists) {
-                logger.error(MESSAGES.LOGIN_UNIQUENESS);
-                return res.status(409).json({ message: MESSAGES.LOGIN_UNIQUENESS })
+                logger.error(MESSAGES.NAME_UNIQUENESS);
+                return res.status(409).json({ message: MESSAGES.NAME_UNIQUENESS })
             } else {
                 const request = await groupService.add(item);
                 return res.status(201).json(request);
@@ -81,7 +79,15 @@ export class GroupController {
     
     update = async(req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params;
+        const { name } = req.body;
         try {
+            if (name) {
+                const isLoginExists: boolean = !!(await groupService.getByName(name));
+                if (isLoginExists) {
+                    logger.error(MESSAGES.NAME_UNIQUENESS);
+                    return res.status(409).json({ error: true, message: MESSAGES.NAME_UNIQUENESS });
+                } 
+            }
             const item: GroupInterface | null = await groupService.update(id, req.body);
             if (!item) {
                 logger.error(MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id));

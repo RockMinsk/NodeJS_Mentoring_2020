@@ -28,19 +28,19 @@ export const SECURITY = {
 }
 
 export const MESSAGES = {
-    ITEMS_NOT_FOUND: (itemName: string) => `${itemName} not found.`,
-    SOME_ITEMS_NOT_FOUND: (itemName1: string, itemName2: string) => `${itemName1} or ${itemName2} not found.`,
-    ITEM_NOT_FOUND: (itemName: string, id: string) => `${itemName} with id ${id} not found.`,
-    ITEM_NOT_CREATED: (itemName: string) => `${itemName} is not created.`,
+    ITEMS_NOT_FOUND: (itemName: string) => `${itemName} not found`,
+    SOME_ITEMS_NOT_FOUND: (itemName1: string, itemName2: string) => `${itemName1} or ${itemName2} not found`,
+    ITEM_NOT_FOUND: (itemName: string, id: string) => `${itemName} with id ${id} not found`,
+    ITEM_NOT_CREATED: (itemName: string) => `${itemName} is not created`,
     ITEM_DELETED: (itemName: string, id: string) => `${itemName} with id ${id} deleted`,
-    LOGIN_UNIQUENESS: `Login should be unique`,
+    NAME_UNIQUENESS: `Name should be unique`,
     SERVER_ERROR: `The following error occurred:`,
     AUTHORIZATION_INVALID_CREDENTIALS: `Invalid username or password`,
     AUTHORIZATION_MISSING_CREDENTIALS: `Please enter username and password`,
     AUTHORIZATION_NO_ACTIVE_USER: (login: string) => `There is no one active user with login "${login}"`,
     AUTHORIZATION_NO_ACTIVE_USER_TOKEN: `There is no one active user with expected token`,
-    AUTHORIZATION_NO_TOKEN: `No token provided.`,
-    AUTHORIZATION_INVALID_TOKEN: `Failed to autenticate token.`
+    AUTHORIZATION_NO_TOKEN: `No token provided`,
+    AUTHORIZATION_INVALID_TOKEN: `Failed to autenticate token`
 }
 
 export const SENSITIVE_DATA = [
