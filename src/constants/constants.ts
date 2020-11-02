@@ -8,10 +8,10 @@ const DB_PORT: number = Number(process.env.DB_PORT) || 5432;
 const DB_USER: string = process.env.DB_USER || 'postgres';
 const DB_PASSWORD: string = process.env.DB_PASSWORD || 'system';
 const DB_DIALECT: string = process.env.DB_DIALECT || 'postgres';
-const DB_LOGGING: boolean = !!process.env.DB_LOGGING && process.env.DB_LOGGING === 'false' ? false : true || true;
+const DB_LOGGING: boolean = !!process.env.DB_LOGGING && process.env.DB_LOGGING === 'false' ? false : true;
 export const DB_SCHEMA_NAME: string = process.env.DB_SCHEMA_NAME || 'public';
-export const DB_SYNC_FORCE: boolean = !!process.env.DB_SYNC_FORCE && process.env.DB_SYNC_FORCE === 'false' ? false : true || true;
-export const BCRYPT_IS_USED: boolean = !!process.env.BCRYPT_IS_USED && process.env.BCRYPT_IS_USED === 'false' ? false : true || true;
+export const DB_SYNC_FORCE: boolean = !!process.env.DB_SYNC_FORCE && process.env.DB_SYNC_FORCE === 'false' ? false : true;
+export const BCRYPT_IS_USED: boolean = !!process.env.BCRYPT_IS_USED && process.env.BCRYPT_IS_USED === 'false' ? false : true;
 
 export const DB_CONNECTION_PROPERTIES: Object = {
     host: DB_HOSTNAME,

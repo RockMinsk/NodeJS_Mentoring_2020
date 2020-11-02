@@ -12,7 +12,7 @@ let err: ErrorRequestHandler = jest.fn();
 let req = ({
     body: {},
     params: { id: generatedId },
-    query: { loginSubstring: 'User 1', limit: 10 }
+    query: { loginSubstring: 'User 1', limit: 2 }
 } as unknown) as Request;
 
 let res = ({
@@ -32,13 +32,11 @@ describe("User Controller", () => {
 
   describe('Get all users ("getAll" method)', () => {
     it("should call user service", async () => {
-        const { loginSubstring, limit } = req.query;
         jest
             .spyOn(userService, "getAll")
             .mockImplementation(() => Promise.resolve([]));
         await userController.getAll(req, res, next);
 
-        expect(userService.getAll).toHaveBeenCalled();
         expect(userService.getAll).toBeCalledTimes(1);
     });
 
@@ -63,6 +61,18 @@ describe("User Controller", () => {
         expect(res.json).toBeCalledTimes(1);
         expect(res.json).toHaveBeenCalledWith(listOfUsers);
     });
+
+    it('should return "200 OK" when loginSubstring and limit query parameters are used', async () => {
+        const listOfUsers = (["User 1", "User 2", "User 3"] as unknown) as UserInterface[];
+        jest
+            .spyOn(userService, "getAll")
+            .mockImplementation(() => Promise.resolve(listOfUsers));
+        await userController.getAll(req, res, next);
+
+        expect(userService.getAll).toHaveBeenCalledWith("User 1", 2);
+        expect(res.json).toBeCalledTimes(1);
+    });
+
     it('should return "500 Internal Server Error" in case of some unexpected error', async () => {
         jest
             .spyOn(userService, "getAll")

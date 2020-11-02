@@ -13,8 +13,8 @@
     "task-1-2-2": "npm run babel-start ./core/task-1-2/csvToJsonUsingStreams.js",
     "compile-check": "tsc --noEmit --diagnostics",
     "start": "nodemon ./src/index.ts",
-    "test": "set DB_LOGGING=false&set LOGGER_LEVEL=error && jest --verbose",
-    "coverage": "set DB_LOGGING=false&set LOGGER_LEVEL=error && jest --coverage"
+    "test": "set DB_LOGGING=false&set LOGGER_LEVEL=none&&jest --verbose",
+    "coverage": "set DB_LOGGING=false&set LOGGER_LEVEL=none&&jest --coverage"
   },
   "author": "Kiryl Shytsikau",
   "license": "ISC",

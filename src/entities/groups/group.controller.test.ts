@@ -38,7 +38,6 @@ describe('Group Controller', () => {
                 .mockImplementation(() => Promise.resolve([]));
             await groupController.getAll(req, res, next);
     
-            expect(groupService.getAll).toHaveBeenCalled();
             expect(groupService.getAll).toBeCalledTimes(1);
         });
 
