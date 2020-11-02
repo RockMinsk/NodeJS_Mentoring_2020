@@ -20,7 +20,12 @@ NodeJS Global Mentoring Program (2020Q3)
     - PostgreSQL database must be installed and running
     - check parameters for application and database in .env file and update them if needed
     - run command 'npm start' to start application
+    - run command 'npm test' to start tests
+    - run command 'npm run coverage' to see test coverage
 
-NOTE: database synchronization is used during starting of application but you can also execute below SQL query to predefine user (login: Test, password: changeit):
+NOTE: 
+ - database synchronization is used during starting of application but you can also execute below SQL query to predefine user (login: Test, password: changeit):
 
 > INSERT INTO users (id, login, password, age, is_deleted) VALUES ('87de8657-ba7b-465c-8a77-c22f7669ddc5', 'Test', '$2b$10$yrrcVZkANk2xL..uKEzpbOF7C4oFx3enr.CY2uQ7dNl/s/34STbm.', 33, false);
+
+ - you can see API documentation on http://localhost:3000/api-docs/
