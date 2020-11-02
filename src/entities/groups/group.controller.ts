@@ -1,11 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { GroupService } from './group.service';
+import { groupService } from './group.service';
 import { GroupInterface } from './group.interface';
 import { MESSAGES } from '../../constants/constants';
 import { logger } from '../../utils/logger/logger.config';
 
-const groupService = new GroupService();
 const entityNameForMessage = 'Group';
 const entityNameAdditionalForMessage = 'User';
 
@@ -116,3 +115,5 @@ export class GroupController {
         } 
     }
 }
+
+export const groupController = new GroupController();

@@ -1,10 +1,10 @@
-import { GroupInterface } from './group.interface';
+import { GroupInterface, UserGroupInterface } from './group.interface';
 import { Group } from './group.model';
 import { sequelize } from '../../db/dbConnection';
-import { UserService } from '../users/user.service'
+import { userService } from '../users/user.service'
 import { serviceInfo } from '../../utils/logger/decorators/service-info';
 
-export class GroupService {
+class GroupService {
 
     @serviceInfo
     async getAll(): Promise<Array<GroupInterface>> {
@@ -38,8 +38,7 @@ export class GroupService {
     }
 
     @serviceInfo
-    async addUsers(id: string, userIds: string[]): Promise<GroupInterface|null> {
-        const userService = new UserService;
+    async addUsers(id: string, userIds: string[]): Promise<UserGroupInterface|null> {
         const group: any | null = await Group.findOne({ where: { id: id }});
         const existingUserIds: string[] = await userService.getAllActiveUserIds(userIds);
         // TODO: clarify how to move transaction to Model layer to avoid using sequelize inside Service layer
@@ -68,3 +67,5 @@ export class GroupService {
         return item;
     }
 }
+
+export const groupService = new GroupService();

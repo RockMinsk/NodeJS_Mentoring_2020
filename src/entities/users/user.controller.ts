@@ -1,16 +1,14 @@
 import { Request, Response, NextFunction } from 'express';
 import { v4 as uuidv4 } from 'uuid';
-import { UserService } from './user.service';
+import { userService } from './user.service';
 import { UserInterface } from './user.interface';
 import { MESSAGES } from '../../constants/constants';
 import { logger } from '../../utils/logger/logger.config';
-import { AuthService } from '../../auth/auth.service';
+import { authService } from '../../auth/auth.service';
 
-const userService = new UserService();
-const authService = new AuthService()
 const entityNameForMessage = 'User';
 
-export class UserController {
+class UserController {
 
     getAll = async(req: Request, res: Response, next: NextFunction) => {
         const { loginSubstring, limit } = req.query;
@@ -91,12 +89,11 @@ export class UserController {
     delete = async (req: Request, res: Response, next: NextFunction) => {
         const { id } = req.params;
         try {
-            const item: UserInterface | null = await userService.getById(id);
+            const item: UserInterface | null = await userService.softDelete(id);
             if (!item) {
                 logger.error(MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id));
                 return res.status(404).json({ error: true, message: MESSAGES.ITEM_NOT_FOUND(entityNameForMessage, id) });
             } else {
-                await userService.softDelete(id);
                 await authService.delete(id);
                 return res.json({ message: MESSAGES.ITEM_DELETED(entityNameForMessage, id) });
             }
@@ -105,3 +102,5 @@ export class UserController {
         } 
     }
 }
+
+export const userController = new UserController();

@@ -1,13 +1,11 @@
 import { Request, Response, Router } from 'express';
 import * as path from 'path';
 import { checkAuth } from './auth.middleware';
-import { AuthController } from './auth.controller';
+import { authController } from './auth.controller';
 import { validateSchema } from '../utils/validation';
 import { authSchemas, validationTarget } from './auth.validation';
 
 export const authRoute = Router();
-
-const authController = new AuthController();
 
 authRoute.get('/', (req: Request, res: Response) => {
     res.sendFile(path.join(__dirname, './login.html'));

@@ -3,12 +3,9 @@ import { BCRYPT_IS_USED, MESSAGES, SECURITY } from "../constants/constants";
 import { logger } from "../utils/logger/logger.config";
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
-import { UserService } from "../entities/users/user.service";
+import { userService } from "../entities/users/user.service";
 import { UserInterface } from "../entities/users/user.interface";
-import { AuthService } from "./auth.service";
-
-const userService = new UserService();
-const authService = new AuthService();
+import { authService } from "./auth.service";
 
 const signTokens = async(req: Request, res: Response, next: NextFunction, expectedUser: UserInterface) => {
     const payload: Object = { sub: expectedUser.id, name: expectedUser.login }
@@ -27,7 +24,7 @@ const signTokens = async(req: Request, res: Response, next: NextFunction, expect
     return res.json(response);
 }
 
-export class AuthController {
+class AuthController {
     login = async(req: Request, res: Response, next: NextFunction) => {
         const { login, password } = req.body;
         let user: UserInterface | null;
@@ -98,3 +95,5 @@ export class AuthController {
         res.redirect('/');
     }
 }
+
+export const authController = new AuthController();

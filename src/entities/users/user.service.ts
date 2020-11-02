@@ -2,7 +2,7 @@ import { User, operatorsAliases } from './user.model';
 import { UserInterface } from './user.interface';
 import { serviceInfo } from '../../utils/logger/decorators/service-info';
 
-export class UserService {
+class UserService {
 
     @serviceInfo
     async getAll(loginSubstring?: string, limit?: number | undefined): Promise<Array<UserInterface>> {
@@ -87,8 +87,10 @@ export class UserService {
     }
 
     @serviceInfo
-    async softDelete (id: string): Promise<any|null> {
+    async softDelete (id: string): Promise<UserInterface|null> {
         const item: User | null = await User.findByPk(id);
         return item ? item.update({ is_deleted: true }) : null;
     }
 }
+
+export const userService = new UserService();
