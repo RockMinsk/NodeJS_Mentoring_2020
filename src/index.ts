@@ -1,5 +1,7 @@
 import express from 'express';
 import cors from 'cors';
+import swaggerUi from 'swagger-ui-express';
+import swaggerDocument from './swagger.json';
 import { authRoute } from './auth/auth.routes';
 import { userRoute } from './entities/users/user.routes';
 import { groupRoute } from './entities/groups/group.routes';
@@ -29,6 +31,7 @@ app.use(performanceLogger);
 app.use(cors(corsOptions));
 
 app.use('/', authRoute);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.use('/api', checkAuth);
 app.use('/api/users', userRoute);
 app.use('/api/groups', groupRoute);

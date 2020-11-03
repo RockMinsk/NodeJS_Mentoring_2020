@@ -1,0 +1,1171 @@
+{
+    "openapi": "3.0.1",
+    "info": {
+        "title": "NodeJS Mentoring program",
+        "description": "Rest API for CRUD service",
+        "contact": {
+            "email": "kiryl_shytsikau@epam.com"
+        },
+        "license": {
+            "name": "MIT",
+            "url": "https://opensource.org/licenses/MIT"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "https://localhost:3000"
+        }
+    ],
+    "tags": [
+        {
+            "name": "auth",
+            "description": "Operations about authorization"
+        },
+        {
+            "name": "users",
+            "description": "Operations about users"
+        },
+        {
+            "name": "groups",
+            "description": "Operations about groups"
+        }
+    ],
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Login to the application",
+                "requestBody": {
+                    "description": "Parameters for login into the app",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "login": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "User logged in",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "accessToken": {
+                                            "type": "string"
+                                        },
+                                        "refreshToken": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Please enter username and password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errors"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Invalid username or password",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/refresh-tokens": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Refresh token",
+                "requestBody": {
+                    "description": "Parameters for refresh token to get new access token",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "token": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "User logged in",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "status": {
+                                            "type": "string"
+                                        },
+                                        "accessToken": {
+                                            "type": "string"
+                                        },
+                                        "refreshToken": {
+                                            "type": "string"
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Token is required",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errors"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "There is no one active user with expected token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Failed to autenticate token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Logout from the application",
+                "requestBody": {
+                    "description": "Parameters for logout from the application",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "login": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK"
+                    },
+                    "401": {
+                        "description": "No token provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Failed to autenticate token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get all users",
+                "parameters": [
+                    {
+                        "in": "query",
+                        "name": "loginSubstring",   
+                        "schema": {
+                            "type": "string",
+                            "example": "localhost:3000/api/users?loginSubstring=Dave"
+                        },
+                        "description": "Get auto-suggest list sorted by login property and filtered by loginSubstring in the login property"
+                    }, {
+                        "in": "query",
+                        "name": "limit",   
+                        "schema": {
+                            "type": "integer",  
+                            "example": "localhost:3000/api/users?limit=2"
+                        },
+                        "description": "Get auto-suggest list from limit users sorted by login property"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/users"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No token provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Failed to autenticate token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Create new user",
+                "requestBody": {
+                    "description": "Parameters for creation a new user",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "login": {
+                                        "type": "string",
+                                        "uniqueItems": true
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "age": {
+                                        "type": "integer",
+                                        "minimum": 4,
+                                        "maximum": 130
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/users"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errors"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No token provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Failed to autenticate token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Name should be unique",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/users/{id}": {
+            "get": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Get user by ID",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",   
+                        "schema": {
+                            "type": "string",
+                            "example": "localhost:3000/api/users/87de8657-ba7b-465c-8a77-c22f7669ddc"
+                        },
+                        "required": true,
+                        "description": "UUID of user to get"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/users"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errors"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No token provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Failed to autenticate token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User with id <USER_ID> not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Update user by ID",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",   
+                        "schema": {
+                            "type": "string",
+                            "example": "localhost:3000/api/users/87de8657-ba7b-465c-8a77-c22f7669ddc"
+                        },
+                        "required": true,
+                        "description": "UUID of user to update"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Parameters for update a user",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "login": {
+                                        "type": "string",
+                                        "uniqueItems": true
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    },
+                                    "age": {
+                                        "type": "integer",
+                                        "minimum": 4,
+                                        "maximum": 130
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/users"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errors"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No token provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Failed to autenticate token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User with id <USER_ID> not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Login should be unique",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "users"
+                ],
+                "summary": "Soft delete user by ID",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",   
+                        "schema": {
+                            "type": "string",
+                            "example": "localhost:3000/api/users/87de8657-ba7b-465c-8a77-c22f7669ddc"
+                        },
+                        "required": true,
+                        "description": "UUID of user to delete"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No content",
+                        "content": {}
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errors"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No token provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Failed to autenticate token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "User with id <USER_ID> not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/groups": {
+            "get": {
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Get all groups",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/groups"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No token provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Failed to autenticate token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Create new group",
+                "requestBody": {
+                    "description": "Parameters for creation a new group",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "uniqueItems": true
+                                    },
+                                    "permissions": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": ["READ", "WRITE", "DELETE", "SHARE", "UPLOAD_FILES" ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/groups"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errors"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No token provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Failed to autenticate token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Name should be unique",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/groups/{id}": {
+            "get": {
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Get group by ID",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",   
+                        "schema": {
+                            "type": "string",
+                            "example": "localhost:3000/api/groups/b0e87e55-25fa-4f24-9e45-6a3ff86bf0f9"
+                        },
+                        "required": true,
+                        "description": "UUID of group to get"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/groups"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errors"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No token provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Failed to autenticate token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Group with id <GROUP_ID> not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Update group by ID",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",   
+                        "schema": {
+                            "type": "string",
+                            "example": "localhost:3000/api/groups/b0e87e55-25fa-4f24-9e45-6a3ff86bf0f9"
+                        },
+                        "required": true,
+                        "description": "UUID of group to update"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Parameters for update a group",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "uniqueItems": true
+                                    },
+                                    "permissions": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": ["READ", "WRITE", "DELETE", "SHARE", "UPLOAD_FILES" ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/groups"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errors"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No token provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Failed to autenticate token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Group with id <GROUP_ID> not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "409": {
+                        "description": "Name should be unique",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Delete group by ID",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",   
+                        "schema": {
+                            "type": "string",
+                            "example": "localhost:3000/api/groups/b0e87e55-25fa-4f24-9e45-6a3ff86bf0f9"
+                        },
+                        "required": true,
+                        "description": "UUID of group to delete"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Group with id <GROUP_ID> deleted",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errors"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No token provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Failed to autenticate token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Group with id <GROUP_ID> not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/groups/{id}/addUsers": {
+            "post": {
+                "tags": [
+                    "groups"
+                ],
+                "summary": "Add users to groups",
+                "parameters": [
+                    {
+                        "in": "path",
+                        "name": "id",   
+                        "schema": {
+                            "type": "string",
+                            "example": "localhost:3000/api/groups/b0e87e55-25fa-4f24-9e45-6a3ff86bf0f9/addUsers"
+                        },
+                        "required": true,
+                        "description": "UUID of group to add users"
+                    }
+                ],
+                "requestBody": {
+                    "description": "Parameters for adding users by UUIDs to group",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "userIds": {
+                                        "type": "array",
+                                        "items": {
+                                            "type": "string"
+                                        },
+                                        "example": ["6f9be57a-685f-4e4a-9ce5-c4ec60b86d99", "87de8657-ba7b-465c-8a77-c22f7669ddc5" ]
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/groups"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Validation error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/errors"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "No token provided",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "403": {
+                        "description": "Failed to autenticate token",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Group or User not found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/error"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "users": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "uniqueItems": true
+                    },
+                    "login": {
+                        "type": "string",
+                        "uniqueItems": true
+                    },
+                    "password": {
+                        "type": "string"
+                    },
+                    "age": {
+                        "type": "integer",
+                        "minimum": 4,
+                        "maximum": 130
+                    },
+                    "is_deleted": {
+                        "type": "boolean"
+                    }
+                }
+            },
+            "groups": {
+                "type": "object",
+                "properties": {
+                    "id": {
+                        "type": "string",
+                        "uniqueItems": true
+                    },
+                    "name": {
+                        "type": "string",
+                        "uniqueItems": true
+                    },
+                    "permissions": {
+                        "type": "array",
+                        "items": {
+                            "type": "string"
+                        },
+                        "example": ["READ", "WRITE", "DELETE", "SHARE", "UPLOAD_FILES" ]
+                    }
+                }
+            },
+            "user_group": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string"
+                    },
+                    "group_id": {
+                        "type": "string"
+                    }
+                }
+            },
+            "tokens": {
+                "type": "object",
+                "properties": {
+                    "user_id": {
+                        "type": "string",
+                        "uniqueItems": true
+                    },
+                    "refresh_token": {
+                        "type": "string"
+                    }
+                }
+            },
+            "error": {
+                "type": "object",
+                "properties": {
+                    "error": {
+                        "type": "boolean"
+                    },
+                    "message": {
+                        "type": "string"
+                    }
+                }
+            },
+            "errors": {
+                "type": "object",
+                "properties": {
+                    "status": {
+                        "type": "string"
+                    },
+                    "message": {
+                        "type": "array",
+                        "items": {
+                            "type": "object"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

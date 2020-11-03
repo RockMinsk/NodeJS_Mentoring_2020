@@ -2,7 +2,7 @@ import { serviceInfo } from "../utils/logger/decorators/service-info";
 import { AuthInterface } from "./auth.interface";
 import { Authentication } from "./auth.model";
 
-export class AuthService {
+class AuthService {
 
     @serviceInfo
     async getTokenByUserId(id: string): Promise<string|null> {
@@ -27,3 +27,5 @@ export class AuthService {
         return item;
     }
 }
+
+export const authService = new AuthService();

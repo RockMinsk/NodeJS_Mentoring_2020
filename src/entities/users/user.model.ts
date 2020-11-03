@@ -54,7 +54,7 @@ User.init(
                 }
             },
             beforeUpdate: async(user, options) => {
-                if (BCRYPT_IS_USED) {
+                if (BCRYPT_IS_USED && user.changed('password')) {
                     const saltRounds = 10;
                     const hash = await bcrypt.hash(user.password, saltRounds);
                     user.password = hash;

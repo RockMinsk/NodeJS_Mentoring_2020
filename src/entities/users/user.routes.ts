@@ -1,11 +1,9 @@
 import { Router } from 'express';
-import { UserController } from './user.controller';
+import { userController } from './user.controller';
 import { validateSchema } from '../../utils/validation';
 import { userSchemas, validationTarget } from './user.validation';
 
 export const userRoute = Router();
-
-const userController = new UserController();
 
 userRoute.all('/:id', validateSchema(userSchemas.id, validationTarget.id));
 
